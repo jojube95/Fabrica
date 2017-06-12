@@ -1,29 +1,56 @@
 package com.joan.fabrica.modelo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Tienda {
-	int id;
-	String localidad;
-	String nombre;
-	String contrasenya;
-	ArrayList<Cliente> clientes;
-	ArrayList<Pedido> pedidos;
-	ArrayList<Venta> ventas;
-	Stock stock;
+	private int id;
+	private String nombre;
+	private String localidad;
+	private String contrasenya;
+	private Stock stock;
+	private ArrayList<Cliente> clientes;
+	private ArrayList<Pedido> pedidos;
+	private ArrayList<Venta> ventas;
+	private HashMap<Cliente, Venta> ventasCliente;
 	
-	public Tienda(int id, String localidad, String nombre, String contrasenya, ArrayList<Cliente> clientes,
-			ArrayList<Pedido> pedidos, ArrayList<Venta> ventas, Stock stock) {
-		
+	
+	public Tienda(int id, String nombre, String localidad, String contrasenya, Stock stock, ArrayList<Cliente> clientes,
+			ArrayList<Pedido> pedidos, ArrayList<Venta> ventas, HashMap<Cliente, Venta> ventasCliente) {
+		super();
 		this.id = id;
-		this.localidad = localidad;
 		this.nombre = nombre;
+		this.localidad = localidad;
 		this.contrasenya = contrasenya;
+		this.stock = stock;
 		this.clientes = clientes;
 		this.pedidos = pedidos;
 		this.ventas = ventas;
-		this.stock = stock;
+		this.ventasCliente = ventasCliente;
 	}
+		
+	public Tienda(int id, String nombre, String localidad, String contrasenya, Stock stock, ArrayList<Cliente> clientes,
+			ArrayList<Pedido> pedidos, ArrayList<Venta> ventas) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.localidad = localidad;
+		this.contrasenya = contrasenya;
+		this.stock = stock;
+		this.clientes = clientes;
+		this.pedidos = pedidos;
+		this.ventas = ventas;
+	}
+		
+	public Tienda(int id, String nombre, String localidad, String contrasenya) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.localidad = localidad;
+		this.contrasenya = contrasenya;
+	}
+
+
 
 	public int getId() {
 		return id;
@@ -92,6 +119,14 @@ public class Tienda {
 	@Override
 	public String toString() {
 		return "Tienda [id=" + id + ", localidad=" + localidad + ", nombre=" + nombre + "]";
+	}
+
+	public HashMap<Cliente, Venta> getVentasCliente() {
+		return ventasCliente;
+	}
+
+	public void setVentasCliente(HashMap<Cliente, Venta> ventasCliente) {
+		this.ventasCliente = ventasCliente;
 	}
 
 	

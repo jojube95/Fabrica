@@ -1,5 +1,97 @@
 package com.joan.fabrica.modelo;
 
-public class Venta {
+import java.sql.Date;
+import java.util.ArrayList;
 
+public class Venta {
+	private int id;
+	private Cliente cliente;
+	private Date fecha;
+	private boolean online;
+	private ArrayList<Panes> panes;
+	private Tienda tienda;
+	private float precio;
+	
+	public Venta(int id, Cliente cliente, Date fecha, boolean online, ArrayList<Panes> panes, Tienda tienda,
+			float precio) {
+		super();
+		this.id = id;
+		this.cliente = cliente;
+		this.fecha = fecha;
+		this.online = online;
+		this.panes = panes;
+		this.tienda = tienda;
+		this.precio = calcularPrecioTotal(panes);
+	}
+	
+	private float calcularPrecioTotal(ArrayList<Panes> panes){
+		float res = 0;
+		for(int i = 0; i < panes.size(); i++){
+			res+=panes.get(i).getPrecio();
+		}
+		return res;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
+	}
+
+	public ArrayList<Panes> getPanes() {
+		return panes;
+	}
+
+	public void setPanes(ArrayList<Panes> panes) {
+		this.panes = panes;
+		this.precio = calcularPrecioTotal(panes);
+	}
+
+	public Tienda getTienda() {
+		return tienda;
+	}
+
+	public void setTienda(Tienda tienda) {
+		this.tienda = tienda;
+	}
+
+	public float getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio() {
+		this.precio = calcularPrecioTotal(this.panes);
+	}
+	
+	
+	
+	
+	
+	
 }
