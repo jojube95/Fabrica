@@ -1,7 +1,10 @@
 package com.joan.fabrica.modelo;
 	
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.joan.fabrica.persistencia.ClienteDAO;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -35,7 +38,15 @@ public class Fabrica extends Application {
 	}
 	
 	public static void main(String[] args) {
+		//Prueba crear usuario en BD
+		Date date = new Date(1992, 10, 10);
+		Cliente cliente = new Cliente("Ranjit", 0, "Dali", date, true, "rajesh", "rajesh");
+		ClienteDAO clienteDAO = new ClienteDAO();
+		clienteDAO.crearCliente(cliente);
+		
 		launch(args);
+		
+		
 	}
 
 	public ArrayList<Tienda> getTiendas() {
