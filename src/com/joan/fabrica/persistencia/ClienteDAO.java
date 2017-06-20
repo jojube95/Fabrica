@@ -84,7 +84,7 @@ public class ClienteDAO {
 				
 				clientes.add(c);
 			}
-					
+			connectionManager.close();		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -119,6 +119,8 @@ public class ClienteDAO {
 				c2.setOnline(rSet.getBoolean(7));
 								
 			}
+			
+			connectionManager.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

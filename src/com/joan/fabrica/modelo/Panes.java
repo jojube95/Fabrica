@@ -1,15 +1,19 @@
 package com.joan.fabrica.modelo;
 
+
 public class Panes {
 	private Pan pan;
+	private int idPanesTienda;
 	private int cant;
 	private float precio;
-	
-	public Panes(Pan pan, int cant, float precio) {
+		
+	public Panes(Integer idPanesTienda, Pan pan, int cant) {
 		super();
+		this.idPanesTienda = idPanesTienda;
 		this.pan = pan;
 		this.cant = cant;
 		this.precio = calcularPrecioTotal(pan, cant);
+		
 	}
 	
 	public float calcularPrecioTotal(Pan pan, int cant){
@@ -41,6 +45,14 @@ public class Panes {
 	public void setPrecio() {
 		this.precio = calcularPrecioTotal(this.pan, this.cant);
 	}
-	
+
+	public int getIdPanesTienda() {
+		return idPanesTienda;
+	}
+
+	public void setIdPanesTienda(int idPanesTienda) {
+		this.idPanesTienda = idPanesTienda;
+	}
+
 	
 }
