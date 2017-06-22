@@ -70,18 +70,26 @@ public class ConnectionManager {
 	}
 	
 	public int updateDB(String sql, boolean returnId) throws SQLException {
-		int id = 0;
-		
-		Statement sentencia = dbcon.createStatement();
-		sentencia.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-		
 		if(returnId){
-			ResultSet rSet = sentencia.getGeneratedKeys();
-			rSet.next();
-			id = rSet.getInt(1);
+			int id = 0;
+			Statement sentencia = dbcon.createStatement();
+			sentencia.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			
+			if(returnId){
+				ResultSet rSet = sentencia.getGeneratedKeys();
+				rSet.next();
+				id = rSet.getInt(1);
+			}
+			
+			return id;
+		}
+		else{
+			Statement sentencia = dbcon.createStatement();
+			sentencia.executeUpdate(sql);
+			return 0;			
 		}
 		
-		return id;
+		
 	}
 	
 	public int updateDBPS(String sql, ArrayList<Object> list, boolean returnId){
