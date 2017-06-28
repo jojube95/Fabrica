@@ -100,6 +100,31 @@ public class PanDAO {
 		return pan2;
 	}
 	
+	public Pan buscarPanFabrica(int idPan){
+		Pan pan = new Pan(0, "", "", (float) 0.0);
+		
+		try {
+			connectionManager.connect();
+			String sql = "SELECT * FROM panesfabrica WHERE idPan = "+idPan;
+			ResultSet rSet = connectionManager.consultar(sql);
+			
+			if(rSet.next()){
+				pan = new Pan(rSet.getInt(1), rSet.getString(2), rSet.getString(3), rSet.getFloat(4));
+			}
+			else{
+				pan = null;
+				
+			}
+			
+			connectionManager.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return pan;
+	}
+	
+	
 	
 	public void crearPanTienda(Pan pan){
 		try {
@@ -186,5 +211,31 @@ public class PanDAO {
 		}
 		return pan2;
 	}
+	
+	public Pan buscarPanTienda(int idPan){
+		
+		Pan pan = new Pan(0, "", "", (float) 0.0);
+		
+		try {
+			connectionManager.connect();
+			String sql = "SELECT * FROM panestienda WHERE idPan = "+idPan;
+			ResultSet rSet = connectionManager.consultar(sql);
+			
+			if(rSet.next()){
+				pan = new Pan(rSet.getInt(2), rSet.getString(3), rSet.getString(4), rSet.getFloat(5));
+			}
+			else{
+				pan = null;
+				
+			}
+			
+			connectionManager.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return pan;
+	}
+	
 	
 }

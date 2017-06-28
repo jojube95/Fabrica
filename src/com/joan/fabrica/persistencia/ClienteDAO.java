@@ -28,8 +28,6 @@ public class ClienteDAO {
 			c.setId(i);
 			
 			
-			
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,5 +124,31 @@ public class ClienteDAO {
 			e.printStackTrace();
 		}
 		return c2;
+	}
+	
+	public Cliente buscarCliente(int idCliente){
+		Cliente cliente = new Cliente("", 0, "", new Date(10), true);
+		
+		try{
+			connectionManager.connect();
+			String sql = "SELECT * FROM clientes WHERE idCliente = " + idCliente;
+			ResultSet rSet = connectionManager.consultar(sql);
+			if(rSet.next()){
+				cliente.setId(rSet.getInt(1));
+				cliente.setNombre(rSet.getString(2));
+				cliente.setLocalidad(rSet.getString(3));
+				cliente.setFechaNac(rSet.getDate(4));
+				cliente.setUsuario(rSet.getString(5));
+				cliente.setPass(rSet.getString(6));
+				cliente.setOnline(rSet.getBoolean(7));
+			}
+			else{
+				cliente = null;
+			}
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return cliente;
 	}
 }

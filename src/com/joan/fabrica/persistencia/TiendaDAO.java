@@ -3,8 +3,6 @@ package com.joan.fabrica.persistencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import com.joan.fabrica.modelo.Pan;
 import com.joan.fabrica.modelo.Tienda;
 
 public class TiendaDAO {
@@ -101,4 +99,10 @@ public class TiendaDAO {
 		}
 		return tienda2;
 	}
+	
+	/*public Tienda buscarTienda(int idTienda){
+		Tienda tienda = new Tienda(id, nombre, localidad, contrasenya)
+		
+	}*/
+		
 }
