@@ -10,6 +10,7 @@ public class Venta {
 	private boolean online;
 	private ArrayList<Panes> panes;
 	private Tienda tienda;
+	private int idTienda;
 	private float precio;
 	
 	public Venta(int id, Cliente cliente, Date fecha, boolean online, ArrayList<Panes> panes, Tienda tienda,
@@ -21,9 +22,22 @@ public class Venta {
 		this.online = online;
 		this.panes = panes;
 		this.tienda = tienda;
+		this.idTienda = tienda.getId();
 		this.precio = calcularPrecioTotal(panes);
 	}
 	
+	public Venta(int id, Cliente cliente, Date fecha, boolean online, ArrayList<Panes> panes, int idTienda,
+			float precio) {
+		this.id = id;
+		this.cliente = cliente;
+		this.fecha = fecha;
+		this.online = online;
+		this.panes = panes;
+		this.tienda = null;
+		this.idTienda = idTienda;
+		this.precio = calcularPrecioTotal(panes);
+	}
+
 	private float calcularPrecioTotal(ArrayList<Panes> panes){
 		float res = 0;
 		for(int i = 0; i < panes.size(); i++){
@@ -87,6 +101,18 @@ public class Venta {
 
 	public void setPrecio() {
 		this.precio = calcularPrecioTotal(this.panes);
+	}
+	
+	public void setPrecio(float precio) {
+		this.precio = precio;
+	}
+
+	public int getIdTienda() {
+		return idTienda;
+	}
+
+	public void setIdTienda(int idTienda) {
+		this.idTienda = idTienda;
 	}
 	
 	

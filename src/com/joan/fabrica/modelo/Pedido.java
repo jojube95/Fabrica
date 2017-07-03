@@ -10,7 +10,7 @@ public class Pedido {
 	private ArrayList<Panes> panes;
 	private float precioTotal;
 	
-	public Pedido(int id, Date fecha, Tienda tienda, ArrayList<Panes> panes, float precioTotal) {
+	public Pedido(int id, Date fecha, Tienda tienda, ArrayList<Panes> panes) {
 		super();
 		this.id = id;
 		this.fecha = fecha;
