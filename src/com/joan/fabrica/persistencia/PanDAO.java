@@ -1,14 +1,9 @@
 package com.joan.fabrica.persistencia;
 
-import java.nio.channels.SelectableChannel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.RestoreAction;
-
 import com.joan.fabrica.modelo.Pan;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -29,7 +24,7 @@ public class PanDAO {
 			lista.add(pan.getPrecio());
 			int i = connectionManager.updateDBPS(sql, lista, true);
 			pan.setId(i);
-			connectionManager.close();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,6 +1,5 @@
 package com.joan.fabrica.persistencia;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import com.joan.fabrica.modelo.Pan;
 import com.joan.fabrica.modelo.Panes;
 import com.joan.fabrica.modelo.Pedido;
 import com.joan.fabrica.modelo.Tienda;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 

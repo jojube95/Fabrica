@@ -1,0 +1,151 @@
+package com.joan.fabrica.persistencia;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.joan.fabrica.modelo.Cliente;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+public class ClienteDAOE {
+	private ConnectionManager connectionManager;
+	public ClienteDAOE(){
+		this.connectionManager = new ConnectionManager("panaderia");
+	}
+	
+	public void crearCliente(Cliente c, Connection conexion){
+		String sql = "INSERT INTO panaderia.clientes (idCliente, nombre, localidad, fechaNacimiento, usuario, contrasenya, online) VALUES (?,?,?,?,?,?,?)";
+		ArrayList<Object> lista = new ArrayList<>();
+		lista.add(0);
+		lista.add(c.getNombre());
+		lista.add(c.getLocalidad());
+		lista.add(c.getFechaNac());
+		lista.add(c.getUsuario());
+		lista.add(c.getPass());
+		lista.add(true);
+		int i = connectionManager.updateDBPS(sql, lista, true);
+		c.setId(i);
+	}
+	
+	public void eliminarCliente(Cliente c, Connection conexion){
+		
+			
+			String sql = "SELECT * FROM clientes WHERE IdCliente = "+c.getId();
+			ResultSet rSet = connectionManager.consultar(sql);
+			try {
+				if(rSet.next()){
+					//Eliminar sus ventas
+					sql = "delete from panesventas where idVenta in (select idVenta from ventas where idCliente = "+c.getId()+")";
+					connectionManager.updateDB(sql, false);
+					sql = "delete from ventas where idCliente = "+c.getId();
+					connectionManager.updateDB(sql, false);
+					//Eliminar cliente
+					sql = "DELETE FROM panaderia.clientes WHERE idCliente = " + c.getId();
+					connectionManager.updateDB(sql, false);
+				}
+				else{
+					Alert alerta = new Alert(AlertType.ERROR);
+					alerta.setTitle("Error");
+					alerta.setContentText("El cliente a eliminar no existe.");
+					alerta.show();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			
+		
+	}
+	
+	public ArrayList<Cliente> obtenerClientes(Connection conexion){
+		ArrayList<Cliente> clientes = new ArrayList<>();
+		ResultSet rSet = null;
+		try {
+			String sql = "SELECT * FROM panaderia.clientes";
+			rSet = connectionManager.consultar(sql);
+			
+			while(rSet.next()){
+				Cliente c = new Cliente(rSet.getString(2), rSet.getInt(1), rSet.getString(3), rSet.getDate(4), rSet.getBoolean(7),rSet.getString(5),rSet.getString(6));
+				clientes.add(c);
+			}
+					
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return clientes;
+		
+	}
+	
+	public Cliente modificarCliente(Cliente c, Connection conexion){
+		Cliente c2 = new Cliente("", 0, "", new Date(10), false,"","");
+		
+		try {
+			String sql = "SELECT * FROM clientes WHERE idCliente = "+c.getId();
+			ResultSet rSet = connectionManager.consultar(sql);
+			if(rSet.next()){
+				sql = "UPDATE panaderia.clientes SET idCliente = " + c.getId() + ", nombre = '" + c.getNombre() + 
+						"', localidad = '" + c.getLocalidad() + "', fechaNacimiento = '" + c.getFechaNac().toString() + 
+						"', usuario = '" + c.getUsuario() + "', contrasenya = '" + c.getPass() + "', online = " + c.isOnline() + " WHERE idCliente = " + c.getId() + "";
+				connectionManager.updateDB(sql, false);
+				
+				//devolver el cliente modificado
+				sql = "SELECT * FROM clientes WHERE idCliente = " + c.getId();
+				rSet = connectionManager.consultar(sql);
+				rSet.next();
+				c2.setId(rSet.getInt(1));
+				c2.setNombre(rSet.getString(2));
+				c2.setLocalidad(rSet.getString(3));
+				c2.setFechaNac(rSet.getDate(4));
+				c2.setUsuario(rSet.getString(5));
+				c2.setPass(rSet.getString(6));
+				c2.setOnline(rSet.getBoolean(7));
+				
+			}
+			else{
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("El cliente a modificar no existe.");
+				alerta.show();
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		
+		return c2;
+	}
+	
+	public Cliente buscarCliente(int idCliente, Connection conexion){
+		Cliente cliente = new Cliente("", 0, "", new Date(10), true);
+		
+		try{
+			String sql = "SELECT * FROM clientes WHERE idCliente = " + idCliente;
+			ResultSet rSet = connectionManager.consultar(sql);
+			if(rSet.next()){
+				cliente.setId(rSet.getInt(1));
+				cliente.setNombre(rSet.getString(2));
+				cliente.setLocalidad(rSet.getString(3));
+				cliente.setFechaNac(rSet.getDate(4));
+				cliente.setUsuario(rSet.getString(5));
+				cliente.setPass(rSet.getString(6));
+				cliente.setOnline(rSet.getBoolean(7));
+			}
+			else{
+				cliente = null;
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("El cliente no existe.");
+				alerta.show();
+			}
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return cliente;
+	}
+}

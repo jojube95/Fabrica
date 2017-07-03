@@ -25,7 +25,7 @@ public class TiendaDAO {
 			lista.add(tienda.getContrasenya());
 			int i = connectionManager.updateDBPS(sql, lista, true);
 			tienda.setId(i);
-			connectionManager.close();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

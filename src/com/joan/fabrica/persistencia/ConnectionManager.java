@@ -30,6 +30,12 @@ public class ConnectionManager {
 		if (dbcon == null)
 				dbcon = DriverManager.getConnection(sourceURL, "root", "");
 	}
+	
+	public Connection connect2() throws SQLException{
+		if (dbcon == null)
+			dbcon = DriverManager.getConnection(sourceURL, "root", "");
+		return dbcon;
+	}
 
 	public void close() throws SQLException {
 		if (dbcon != null) {
