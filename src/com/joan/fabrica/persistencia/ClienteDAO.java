@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import com.joan.fabrica.modelo.Cliente;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class ClienteDAO {
 	private ConnectionManager connectionManager;
 	public ClienteDAO(){
@@ -26,40 +29,50 @@ public class ClienteDAO {
 			lista.add(true);
 			int i = connectionManager.updateDBPS(sql, lista, true);
 			c.setId(i);
-			
-			
+						
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
 				connectionManager.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	public void eliminarCliente(Cliente c){
 		try {
 			connectionManager.connect();
-			String sql = "DELETE FROM panaderia.clientes WHERE idCliente = " + c.getId();
-			connectionManager.updateDB(sql, false);
+			String sql = "SELECT * FROM clientes WHERE IdCliente = "+c.getId();
+			ResultSet rSet = connectionManager.consultar(sql);
+			if(rSet.next()){
+				//Eliminar sus ventas
+				sql = "delete from panesventas where idVenta in (select idVenta from ventas where idCliente = "+c.getId()+")";
+				connectionManager.updateDB(sql, false);
+				sql = "delete from ventas where idCliente = "+c.getId();
+				connectionManager.updateDB(sql, false);
+				//Eliminar cliente
+				sql = "DELETE FROM panaderia.clientes WHERE idCliente = " + c.getId();
+				connectionManager.updateDB(sql, false);
+			}
+			else{
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("El cliente a eliminar no existe.");
+				alerta.show();
+			}
+			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
 				connectionManager.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	public ArrayList<Cliente> obtenerClientes(){
@@ -71,21 +84,18 @@ public class ClienteDAO {
 			rSet = connectionManager.consultar(sql);
 			
 			while(rSet.next()){
-				Cliente c = new Cliente("", 0, "", new Date(10), false,"","");
-				c.setId(rSet.getInt(1));
-				c.setNombre(rSet.getString(2));
-				c.setLocalidad(rSet.getString(3));
-				c.setFechaNac(rSet.getDate(4));
-				c.setUsuario(rSet.getString(5));
-				c.setPass(rSet.getString(6));
-				c.setOnline(rSet.getBoolean(7));
-				
+				Cliente c = new Cliente(rSet.getString(2), rSet.getInt(1), rSet.getString(3), rSet.getDate(4), rSet.getBoolean(7),rSet.getString(5),rSet.getString(6));
 				clientes.add(c);
 			}
 			connectionManager.close();		
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connectionManager.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return clientes;
 		
@@ -96,18 +106,18 @@ public class ClienteDAO {
 		
 		try {
 			connectionManager.connect();
-			String sql = "UPDATE panaderia.clientes SET idCliente = " + c.getId() + ", nombre = '" + c.getNombre() + 
-					"', localidad = '" + c.getLocalidad() + "', fechaNacimiento = '" + c.getFechaNac().toString() + 
-					"', usuario = '" + c.getUsuario() + "', contrasenya = '" + c.getPass() + "', online = " + c.isOnline() + " WHERE idCliente = " + c.getId() + "";
-			connectionManager.updateDB(sql, false);
-			
-			//UPDATE panaderia.clientes SET idCliente = 16, nombre = Ranjit, localidad = Aielo, fechaNacimiento = 3892-11-10, usuario = rajesh, contrasenya = rajesh, online = true WHERE idCliente = 16
-			
-			//devolver el cliente modificado
-			sql = "SELECT * FROM panaderia.clientes WHERE idCliente = " + c.getId() + "";
+			String sql = "SELECT * FROM clientes WHERE idCliente = "+c.getId();
 			ResultSet rSet = connectionManager.consultar(sql);
-			
-			while(rSet.next()){
+			if(rSet.next()){
+				sql = "UPDATE panaderia.clientes SET idCliente = " + c.getId() + ", nombre = '" + c.getNombre() + 
+						"', localidad = '" + c.getLocalidad() + "', fechaNacimiento = '" + c.getFechaNac().toString() + 
+						"', usuario = '" + c.getUsuario() + "', contrasenya = '" + c.getPass() + "', online = " + c.isOnline() + " WHERE idCliente = " + c.getId() + "";
+				connectionManager.updateDB(sql, false);
+				
+				//devolver el cliente modificado
+				sql = "SELECT * FROM clientes WHERE idCliente = " + c.getId();
+				rSet = connectionManager.consultar(sql);
+				rSet.next();
 				c2.setId(rSet.getInt(1));
 				c2.setNombre(rSet.getString(2));
 				c2.setLocalidad(rSet.getString(3));
@@ -115,13 +125,24 @@ public class ClienteDAO {
 				c2.setUsuario(rSet.getString(5));
 				c2.setPass(rSet.getString(6));
 				c2.setOnline(rSet.getBoolean(7));
-								
+				
+			}
+			else{
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("El cliente a modificar no existe.");
+				alerta.show();
 			}
 			
-			connectionManager.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connectionManager.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return c2;
 	}
@@ -144,6 +165,10 @@ public class ClienteDAO {
 			}
 			else{
 				cliente = null;
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("El cliente no existe.");
+				alerta.show();
 			}
 			
 		}catch(SQLException e){

@@ -9,6 +9,9 @@ import com.joan.fabrica.modelo.Panes;
 import com.joan.fabrica.modelo.Pedido;
 import com.joan.fabrica.modelo.Tienda;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class PedidoDAO {
 	private ConnectionManager connectionManager;
 	public PedidoDAO(){
@@ -38,17 +41,13 @@ public class PedidoDAO {
 				lista.clear();
 			}
 			
-			
-			
-			
+				
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
 				connectionManager.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -58,19 +57,28 @@ public class PedidoDAO {
 	public void eliminarPedido(Pedido p){
 		try {
 			connectionManager.connect();
-			String sql = "DELETE FROM panespedidos WHERE idPedido = " + p.getId();
-			connectionManager.updateDB(sql, false);
-			sql = "DELETE FROM pedidos WHERE idPedido = " + p.getId();
-			connectionManager.updateDB(sql, false);
+			String sql = "select * from pedidos where idPedido = "+p.getId();
+			ResultSet resultSet = connectionManager.consultar(sql);
+			if(resultSet.next()){
+				sql = "DELETE FROM panespedidos WHERE idPedido = " + p.getId();
+				connectionManager.updateDB(sql, false);
+				sql = "DELETE FROM pedidos WHERE idPedido = " + p.getId();
+				connectionManager.updateDB(sql, false);
+			}
+			else{
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("El pedido a eliminar no existe.");
+				alerta.show();	
+			}
+			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
 				connectionManager.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -85,13 +93,9 @@ public class PedidoDAO {
 		ResultSet rSet2 = null;
 		//Atributos pedido
 		int id;
-		Date fecha;
 		//Atributos tienda
 		int idTienda;
-		String nombreTienda;
-		String localidad;
-		String contrasenya;
-		
+				
 		try {
 			connectionManager.connect();
 			String sql = "SELECT * FROM pedidos";
@@ -101,16 +105,11 @@ public class PedidoDAO {
 				ArrayList<Panes> panes = new ArrayList<>();
 				id = (rSet.getInt(1));
 				idTienda = (rSet.getInt(2));
-				fecha = (rSet.getDate(3));
 							
-			
 				sql = "SELECT * FROM tiendas WHERE idTienda = "+idTienda;
 				rSet2 = connectionManager.consultar(sql);
 				rSet2.next();
-				localidad = rSet2.getString(2);
-				nombreTienda = rSet2.getString(3);
-				contrasenya = rSet2.getString(4);
-				Tienda tienda = new Tienda(idTienda, localidad, nombreTienda, contrasenya);
+				Tienda tienda = new Tienda(rSet.getInt(2), rSet2.getString(2), rSet2.getString(3), rSet2.getString(4));
 								
 				sql = "SELECT panespedidos.idPan, panespedidos.cantidad, panesfabrica.tipo, panesfabrica.nombre, panesfabrica.precio  FROM panespedidos, panesfabrica WHERE idPedido = "+id+" AND panespedidos.idPan = panesfabrica.idPan";
 				rSet2 = connectionManager.consultar(sql);
@@ -120,16 +119,20 @@ public class PedidoDAO {
 					Panes panes2 = new Panes(0, pan, rSet2.getInt(2));
 					panes.add(panes2);
 				}
-				Pedido pedido = new Pedido(id, fecha, tienda, panes);
+				Pedido pedido = new Pedido(id, rSet.getDate(3), tienda, panes);
 				pedidos.add(pedido);
 				panes = new ArrayList<>();
 			}
-			
-			
-			connectionManager.close();		
+											
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connectionManager.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return pedidos;
 		
@@ -140,29 +143,46 @@ public class PedidoDAO {
 		ArrayList<Object> lista = new ArrayList<>();
 		try {
 			connectionManager.connect();
-			String sql = "UPDATE pedidos SET idPedido = " + p.getId() + ", idTienda = " + p.getTienda().getId() + 
-					", fechaInicio = '" + p.getFecha() + "', precio = " + p.getPrecioTotal()+ " WHERE idPedido = " + p.getId();
-			connectionManager.updateDB(sql, false);
-			
-			//Eliminar panes del pedido anterior
-			sql = "DELETE FROM panespedidos WHERE idPedido = " + p.getId();
-			connectionManager.updateDB(sql, false);
-			//Anyadir los panes del pedido actual
-			
-			for(int i = 0;  i < p.getPanes().size(); i++){
-				sql = "INSERT INTO panespedidos(idPedido, idPan, cantidad) VALUES (?,?,?)";
-				lista.add(p.getId());
-				lista.add(p.getPanes().get(i).getPan().getId());
-				lista.add(p.getPanes().get(i).getCant());
-				connectionManager.updateDBPS(sql, lista, false);
-				lista.clear();
+			String sql = "select * from pedidos where idPedido = "+p.getId();
+			ResultSet resultSet = connectionManager.consultar(sql);
+			if(resultSet.next()){
+				sql = "UPDATE pedidos SET idPedido = " + p.getId() + ", idTienda = " + p.getTienda().getId() + 
+						", fechaInicio = '" + p.getFecha() + "', precio = " + p.getPrecioTotal()+ " WHERE idPedido = " + p.getId();
+				connectionManager.updateDB(sql, false);
+				
+				//Eliminar panes del pedido anterior
+				sql = "DELETE FROM panespedidos WHERE idPedido = " + p.getId();
+				connectionManager.updateDB(sql, false);
+				//Anyadir los panes del pedido actual
+				
+				for(int i = 0;  i < p.getPanes().size(); i++){
+					sql = "INSERT INTO panespedidos(idPedido, idPan, cantidad) VALUES (?,?,?)";
+					lista.add(p.getId());
+					lista.add(p.getPanes().get(i).getPan().getId());
+					lista.add(p.getPanes().get(i).getCant());
+					connectionManager.updateDBPS(sql, lista, false);
+					lista.clear();
+				}
+				
+			}
+			else{
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("El pedido a modificar no existe.");
+				alerta.show();	
 			}
 			
-			connectionManager.close();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connectionManager.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+		
 		return p2;
 	}
 }

@@ -2,6 +2,14 @@ package com.joan.fabrica.modelo;
 	
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.joan.fabrica.persistencia.ClienteDAO;
+import com.joan.fabrica.persistencia.PanDAO;
+import com.joan.fabrica.persistencia.PedidoDAO;
+import com.joan.fabrica.persistencia.StockDAO;
+import com.joan.fabrica.persistencia.TiendaDAO;
+import com.joan.fabrica.persistencia.VentaDAO;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -35,12 +43,6 @@ public class Fabrica extends Application {
 	
 	public static void main(String[] args) {
 		//Crear stockFabrica(UNICO)
-		
-		//------PRUEBAS CRUD-------------------------------
-		
-		
-		
-		
 		
 		
 		launch(args);

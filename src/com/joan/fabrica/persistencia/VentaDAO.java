@@ -1,18 +1,17 @@
 package com.joan.fabrica.persistencia;
 
-import java.sql.Date;
+import java.io.Console;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.naming.spi.DirStateFactory.Result;
-
 import com.joan.fabrica.modelo.Cliente;
 import com.joan.fabrica.modelo.Pan;
 import com.joan.fabrica.modelo.Panes;
-import com.joan.fabrica.modelo.Pedido;
 import com.joan.fabrica.modelo.Tienda;
 import com.joan.fabrica.modelo.Venta;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class VentaDAO {
 	private ConnectionManager connectionManager;
@@ -65,19 +64,28 @@ public class VentaDAO {
 	public void eliminarVenta(Venta v){
 		try {
 			connectionManager.connect();
-			String sql = "DELETE FROM panesventas WHERE idVenta = " + v.getId();
-			connectionManager.updateDB(sql, false);
-			sql = "DELETE FROM ventas WHERE idVenta = " + v.getId();
-			connectionManager.updateDB(sql, false);
+			String sql = "select * from ventas where idVenta = "+v.getId();
+			ResultSet resultSet = connectionManager.consultar(sql);
+			if(resultSet.next()){
+				sql = "DELETE FROM panesventas WHERE idVenta = " + v.getId();
+				connectionManager.updateDB(sql, false);
+				sql = "DELETE FROM ventas WHERE idVenta = " + v.getId();
+				connectionManager.updateDB(sql, false);
+			}
+			else{
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("La venta a eliminar no existe.");
+				alerta.show();	
+			}
+			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
 				connectionManager.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -100,13 +108,11 @@ public class VentaDAO {
 				//Recorrer cada panes de la venta
 				while(rSet2.next()){
 					//Obtener la cantidad de panes
-					int cantidad = rSet2.getInt(3);
-					int idPanesTienda = rSet2.getInt(1);
-					sql = "SELECT * FROM panestienda WHERE idPanesTienda = "+idPanesTienda;
+					sql = "SELECT * FROM panestienda WHERE idPanesTienda = "+rSet2.getInt(1);
 					ResultSet rSet3 = connectionManager.consultar(sql);
 					rSet3.next();
 					Pan pan = new Pan(rSet3.getInt(2), rSet3.getString(3), rSet3.getString(4), rSet3.getFloat(5));
-					Panes panes = new Panes(idPanesTienda, pan, cantidad);
+					Panes panes = new Panes(rSet2.getInt(1), pan, rSet2.getInt(3));
 					panesVenta.add(panes);
 				}
 				//Obtener cliente
@@ -128,10 +134,15 @@ public class VentaDAO {
 				panesVenta = new ArrayList<>();
 			}
 			
-			connectionManager.close();		
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connectionManager.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return ventas;
 		
@@ -142,62 +153,75 @@ public class VentaDAO {
 		Venta venta = new Venta(0, null, null, true, v.getPanes(), v.getIdTienda(), 0);
 		ArrayList<Panes> panesVenta = new ArrayList<>();
 		ArrayList<Object> lista = new ArrayList<>();
-		
+				
 		try {
-			//Eliminar los panes de la venta
-			connectionManager.connect();
-			String sql = "DELETE FROM panesventas WHERE idVenta = "+v.getId();
-			connectionManager.updateDB(sql, false);
+			String sql = "select * from ventas where idVenta = "+v.getId();
+			ResultSet resultSet = connectionManager.consultar(sql);
 			
-			//Modificar la venta
-			connectionManager.connect();
-			//sql = "UPDATE ventas SET idVenta = "+v.getId()+", idCliente = "+v.getCliente().getId()+", idTienda = "+v.getIdTienda()+", fecha = '"+v.getFecha()+"', online = "+v.isOnline()+", precio = "+v.getPrecio();
-			sql = "UPDATE ventas SET idCliente = "+v.getCliente().getId()+", idTienda = "+v.getIdTienda()+", fecha = '"+v.getFecha()+"', online = "+v.isOnline()+", precio = "+v.getPrecio()+" WHERE idVenta= "+v.getId();
-			connectionManager.updateDB(sql, false);
-			
-			//Crear los panes de la venta modificada
-			for(int i = 0;  i < v.getPanes().size(); i++){
-				sql = "INSERT INTO panesventas(idPanesTienda, idVenta, cantidad) VALUES (?,?,?)";
-				lista.add(v.getPanes().get(i).getIdPanesTienda());
-				lista.add(v.getId());
-				lista.add(v.getPanes().get(i).getCant());
-				connectionManager.updateDBPS(sql, lista, false);
-				lista.clear();
+			if(resultSet.next()){
+				//Eliminar los panes de la venta
+				connectionManager.connect();
+				sql = "DELETE FROM panesventas WHERE idVenta = "+v.getId();
+				connectionManager.updateDB(sql, false);
+				
+				//Modificar la venta
+				connectionManager.connect();
+				//sql = "UPDATE ventas SET idVenta = "+v.getId()+", idCliente = "+v.getCliente().getId()+", idTienda = "+v.getIdTienda()+", fecha = '"+v.getFecha()+"', online = "+v.isOnline()+", precio = "+v.getPrecio();
+				sql = "UPDATE ventas SET idCliente = "+v.getCliente().getId()+", idTienda = "+v.getIdTienda()+", fecha = '"+v.getFecha()+"', online = "+v.isOnline()+", precio = "+v.getPrecio()+" WHERE idVenta= "+v.getId();
+				connectionManager.updateDB(sql, false);
+				
+				//Crear los panes de la venta modificada
+				for(int i = 0;  i < v.getPanes().size(); i++){
+					sql = "INSERT INTO panesventas(idPanesTienda, idVenta, cantidad) VALUES (?,?,?)";
+					lista.add(v.getPanes().get(i).getIdPanesTienda());
+					lista.add(v.getId());
+					lista.add(v.getPanes().get(i).getCant());
+					connectionManager.updateDBPS(sql, lista, false);
+					lista.clear();
+				}
+				
+				//Obtener la venta modificada
+				sql = "SELECT * FROM ventas WHERE idVenta = "+v.getId();
+				ResultSet rSet = connectionManager.consultar(sql);
+				rSet.next();
+				sql = "SELECT * FROM panesventas WHERE idVenta = "+v.getId();
+				ResultSet rSet2 = connectionManager.consultar(sql);
+				//Recorrer cada panes de la venta
+				while(rSet2.next()){
+					//Obtener la cantidad de panes
+					int cantidad = rSet2.getInt(3);
+					int idPanesTienda = rSet2.getInt(1);
+					sql = "SELECT * FROM panestienda WHERE idPanesTienda = "+idPanesTienda;
+					ResultSet rSet3 = connectionManager.consultar(sql);
+					rSet3.next();
+					Pan pan = new Pan(rSet3.getInt(2), rSet3.getString(3), rSet3.getString(4), rSet3.getFloat(5));
+					Panes panes = new Panes(idPanesTienda, pan, cantidad);
+					panesVenta.add(panes);
+				}
+				//Crear venta
+				venta.setId(rSet.getInt(1));
+				venta.setCliente(v.getCliente());
+				venta.setFecha(rSet.getDate(4));
+				venta.setOnline(rSet.getBoolean(5));
+				venta.setPanes(panesVenta);
+				venta.setTienda(v.getTienda());
+				venta.setPrecio(rSet.getFloat(6));
 			}
-			
-			//Obtener la venta modificada
-			sql = "SELECT * FROM ventas WHERE idVenta = "+v.getId();
-			ResultSet rSet = connectionManager.consultar(sql);
-			rSet.next();
-			sql = "SELECT * FROM panesventas WHERE idVenta = "+v.getId();
-			ResultSet rSet2 = connectionManager.consultar(sql);
-			//Recorrer cada panes de la venta
-			while(rSet2.next()){
-				//Obtener la cantidad de panes
-				int cantidad = rSet2.getInt(3);
-				int idPanesTienda = rSet2.getInt(1);
-				sql = "SELECT * FROM panestienda WHERE idPanesTienda = "+idPanesTienda;
-				ResultSet rSet3 = connectionManager.consultar(sql);
-				rSet3.next();
-				Pan pan = new Pan(rSet3.getInt(2), rSet3.getString(3), rSet3.getString(4), rSet3.getFloat(5));
-				Panes panes = new Panes(idPanesTienda, pan, cantidad);
-				panesVenta.add(panes);
+			else{
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error");
+				alerta.setContentText("La venta a modificar no existe.");
+				alerta.show();	
 			}
-			//Crear venta
-			venta.setId(rSet.getInt(1));
-			venta.setCliente(v.getCliente());
-			venta.setFecha(rSet.getDate(4));
-			venta.setOnline(rSet.getBoolean(5));
-			venta.setPanes(panesVenta);
-			venta.setTienda(v.getTienda());
-			venta.setPrecio(rSet.getFloat(6));
-			
-			
-			
-			connectionManager.close();		
+				
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connectionManager.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}	
 		}
 		return venta;
 		
