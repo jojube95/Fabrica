@@ -14,7 +14,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
-public class ModPedidoController {
+public class ModPedidoTiendaController {
 	@FXML
     private ResourceBundle resources;
 
@@ -34,7 +34,7 @@ public class ModPedidoController {
     private TableView<Panes> tvPanes;
 
     @FXML
-    private TableColumn<Panes, Integer> tcPan;
+    private TableColumn<Panes, String> tcPan;
 
     @FXML
     private TableColumn<Panes, Integer> tcCantidad;

@@ -9,12 +9,20 @@ import com.joan.fabrica.modelo.Pedido;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class PedidosController {
+	public static ModPedidoTiendaController modPedidoTiendaController;
+	public static Stage stageModPedidoTienda = new Stage();
+	
 	@FXML
     private ResourceBundle resources;
 
@@ -65,8 +73,8 @@ public class PedidosController {
 
     @FXML
     void abrirEditar(ActionEvent event) {
-
-    }
+    	stageModPedidoTienda.showAndWait();
+	}
 
     @FXML
     void abrirEliminar(ActionEvent event) {
@@ -94,6 +102,18 @@ public class PedidosController {
         assert tcTipo != null : "fx:id=\"tcTipo\" was not injected: check your FXML file 'Pedidos.fxml'.";
         assert tcCantidad != null : "fx:id=\"tcCantidad\" was not injected: check your FXML file 'Pedidos.fxml'.";
         assert tcPrecioPan != null : "fx:id=\"tcPrecioPan\" was not injected: check your FXML file 'Pedidos.fxml'.";
-
+        try {
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModPedidoTienda.fxml"));
+	        AnchorPane root = (AnchorPane) loader.load();
+	        Scene scene = new Scene(root);
+	        stageModPedidoTienda.initModality(Modality.WINDOW_MODAL);
+			stageModPedidoTienda.initOwner(TiendasController.pedidosStage);
+	        stageModPedidoTienda.setTitle("Modificar venta");
+	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
+	        stageModPedidoTienda.setScene(scene);
+	        this.modPedidoTiendaController = loader.getController();
+        } catch(Exception e) {
+			e.printStackTrace();
+		}
     }
 }

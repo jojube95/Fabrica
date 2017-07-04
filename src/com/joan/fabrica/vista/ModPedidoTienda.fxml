@@ -13,7 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.joan.fabrica.controlador.ModVentaController">
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="com.joan.fabrica.controlador.ModPedidoTiendaController">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -21,68 +22,63 @@
                <children>
                   <HBox>
                      <children>
-                        <Label text="IdVenta:" />
-                        <Label fx:id="lVenta" text="lVenta" />
+                        <Label text="IdPedido:" />
+                        <Label fx:id="lPedido" text="lPedido" />
                      </children>
-                     <VBox.margin>
+                     <padding>
                         <Insets bottom="5.0" />
-                     </VBox.margin>
+                     </padding>
                   </HBox>
                   <HBox>
                      <children>
                         <Label text="Fecha:" />
                         <DatePicker fx:id="tFecha" />
                      </children>
-                     <VBox.margin>
+                     <padding>
                         <Insets bottom="5.0" />
-                     </VBox.margin>
+                     </padding>
                   </HBox>
                   <HBox>
                      <children>
-                        <Label text="Cliente:" />
-                        <MenuButton fx:id="mCliente" mnemonicParsing="false" text="MenuButton">
+                        <Label text="Tienda:" />
+                        <MenuButton fx:id="mTienda" mnemonicParsing="false" text="MenuButton">
                           <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
                             <MenuItem mnemonicParsing="false" text="Action 2" />
                           </items>
                         </MenuButton>
                      </children>
-                     <VBox.margin>
+                     <padding>
                         <Insets bottom="5.0" />
-                     </VBox.margin>
+                     </padding>
                   </HBox>
                   <TableView fx:id="tvPanes">
                     <columns>
                       <TableColumn fx:id="tcPan" prefWidth="75.0" text="Pan" />
-                      <TableColumn fx:id="tcCantidad" prefWidth="172.0" text="Cantidad" />
-                        <TableColumn fx:id="tcPrecio" prefWidth="75.0" text="Precio" />
+                      <TableColumn fx:id="tcCantidad" prefWidth="100.0" text="Cantidad" />
+                        <TableColumn fx:id="tcPrecio" prefWidth="72.0" text="Precio" />
                     </columns>
                   </TableView>
                </children>
-               <BorderPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
             </VBox>
          </center>
          <bottom>
             <HBox BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="bAceptar" mnemonicParsing="false" onAction="#abrirAceptar" text="Aceptar">
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="bCancelar" mnemonicParsing="false" onAction="#abrirCancelar" text="Cancelar">
-                     <HBox.margin>
-                        <Insets right="5.0" />
-                     </HBox.margin>
-                  </Button>
+                  <Button fx:id="bAceptar" mnemonicParsing="false" onAction="#abrirAceptar" text="Aceptar" />
+                  <Button fx:id="bCancelar" mnemonicParsing="false" onAction="#abrirCancelar" text="Cancelar" />
                </children>
-               <BorderPane.margin>
-                  <Insets bottom="10.0" />
-               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
             </HBox>
          </bottom>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
       </BorderPane>
    </children>
 </AnchorPane>

@@ -4,18 +4,25 @@ import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import com.joan.fabrica.modelo.Fabrica;
 import com.joan.fabrica.modelo.Panes;
 import com.joan.fabrica.modelo.Venta;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class VentasTiendaController {
-
+	public static ModVentaController modVentaController;
+	public static Stage modVentaStage = new Stage();
 	@FXML
     private ResourceBundle resources;
 
@@ -69,7 +76,20 @@ public class VentasTiendaController {
 
     @FXML
     void abrirEditar(ActionEvent event) {
-
+    	try {
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModVenta.fxml"));
+	        AnchorPane root = (AnchorPane) loader.load();
+	        Scene scene = new Scene(root);
+	        modVentaStage.initModality(Modality.WINDOW_MODAL);
+			modVentaStage.initOwner(TiendasController.ventasStage);
+	        modVentaStage.setTitle("Modificar venta");
+	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
+	        modVentaStage.setScene(scene);
+	        this.modVentaController = loader.getController();
+	        modVentaStage.showAndWait();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML
