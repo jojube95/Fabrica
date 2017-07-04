@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="com.joan.fabrica.controlador.StockTiendaController">
+   <children>
+      <BorderPane minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <HBox minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Buscar:" />
+                  <TextField fx:id="tBuscar" />
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+            </HBox>
+         </top>
+         <center>
+            <TableView fx:id="tvStock" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+              <columns>
+                  <TableColumn fx:id="tcId" prefWidth="75.0" text="Id" />
+                <TableColumn fx:id="tcNombre" prefWidth="75.0" text="Nombre" />
+                <TableColumn fx:id="tcTipo" prefWidth="75.0" text="Tipo" />
+                  <TableColumn fx:id="tcCantidad" prefWidth="75.0" text="Cantidad" />
+                  <TableColumn fx:id="tcPrecio" prefWidth="75.0" text="Precio" />
+              </columns>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" />
+               </BorderPane.margin>
+            </TableView>
+         </center>
+         <bottom>
+            <HBox minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="bNuevo" mnemonicParsing="false" onAction="#abrirNuevo" text="Nuevo">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="bEditar" mnemonicParsing="false" onAction="#abrirEditar" text="Editar">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="bEliminar" mnemonicParsing="false" onAction="#abrirEliminar" text="Eliminar">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" />
+               </BorderPane.margin>
+            </HBox>
+         </bottom>
+      </BorderPane>
+   </children>
+</AnchorPane>

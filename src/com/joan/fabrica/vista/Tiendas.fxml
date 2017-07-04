@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.joan.fabrica.controlador.TiendasController">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label minHeight="-Infinity" minWidth="-Infinity" text="Buscar:">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <TextField fx:id="tBuscar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <TableView fx:id="tvTienda" minHeight="-Infinity" minWidth="-Infinity">
+                    <columns>
+                      <TableColumn fx:id="tcNombre" prefWidth="125.0" text="Nombre" />
+                      <TableColumn fx:id="tcLocalidad" prefWidth="122.0" text="Localidad" />
+                    </columns>
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </TableView>
+               </children>
+            </VBox>
+         </center>
+         <bottom>
+            <HBox BorderPane.alignment="BOTTOM_LEFT">
+               <children>
+                  <Button fx:id="bNuevo" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#abrirNuevo" text="Nuevo">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="bEditar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#abrirEditar" text="Editar">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="bEliminar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#abrirEliminar" text="Eliminar">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+            </HBox>
+         </bottom>
+         <right>
+            <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="bPedidos" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#abrirPedidos" text="Pedidos">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="bStock" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#abrirStock" text="Stock">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="bVentas" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#abrirVentas" text="Ventas">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="bClientes" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#abrirClientes" text="Clientes">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>
