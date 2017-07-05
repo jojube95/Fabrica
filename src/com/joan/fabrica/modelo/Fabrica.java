@@ -74,7 +74,6 @@ public class Fabrica extends Application {
 		StockDAOE stockDAOE = new StockDAOE(connectionManager);
 		PanDAOE panDAOE = new PanDAOE(connectionManager);
 		VentaDAOE ventaDAOE = new VentaDAOE(connectionManager);
-		ClienteDAOE clienteDAOE = new ClienteDAOE(connectionManager);
 		PedidoDAOE pedidoDAOE = new PedidoDAOE(connectionManager);
 				
 		tiendas = tiendaDAOE.obtenerTiendas();

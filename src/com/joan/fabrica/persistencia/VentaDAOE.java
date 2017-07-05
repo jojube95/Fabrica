@@ -100,8 +100,8 @@ public class VentaDAOE {
 					panesVenta.add(panes);
 				}
 				//Obtener cliente
-				ClienteDAO clienteDAO = new ClienteDAO();
-				Cliente cliente = clienteDAO.buscarCliente(rSet.getInt(2));
+				ClienteDAOE clienteDAOE = new ClienteDAOE(this.connectionManager);
+				Cliente cliente = clienteDAOE.buscarCliente(rSet.getInt(2));
 				//Obtener tienda
 				Tienda tienda = new Tienda(0, "", "", "");
 				ResultSet rSet3 = connectionManager.consultar("SELECT * FROM tiendas WHERE idTienda = "+rSet.getInt(3));

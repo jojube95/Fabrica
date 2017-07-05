@@ -21,7 +21,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class TiendasController {
-	private Stage tiendasStage = PrincipalController.stageTiendas;
 	//Controlers que abre este controler
 	public static PedidosController pedidosController;
 	public static StockTiendaController stockTiendaController;
@@ -39,151 +38,6 @@ public class TiendasController {
 	boolean lockPedidos = false;
 	boolean lockStock = false;
 	boolean lockVentas = false;
-	
-	public class ThreadPedidos extends Thread {
-		
-		private PedidosController pedidosController;
-		private TiendasController tiendasController;
-	    public void run(){
-	       try {
-	    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Pedidos.fxml"));
-		        AnchorPane root;
-				root = (AnchorPane) loader.load();
-				Scene scene = new Scene(root);
-		        pedidosStage.setTitle("Pedidos");
-		        pedidosStage.setScene(scene);
-		        this.pedidosController = loader.getController();
-		        TiendasController.pedidosController = this.pedidosController;
-		        pedidosController.setTiendasController(this.tiendasController);
-		        pedidosStage.show();
-		        
-	        } catch (IOException e) {
-				e.printStackTrace();
-			}
-	    	
-	    	
-	    }
-		public PedidosController getPedidosController() {
-			return pedidosController;
-		}
-		public void setPedidosController(PedidosController pedidosController) {
-			this.pedidosController = pedidosController;
-		}
-		public TiendasController getTiendasController() {
-			return tiendasController;
-		}
-		public void setTiendasController(TiendasController tiendasController) {
-			this.tiendasController = tiendasController;
-		}
-	  }
-	
-	public class ThreadStock extends Thread {
-		private TiendasController tiendasController;		
-		private StockTiendaController stockTiendaController;
-	    public void run(){
-	       
-    		try {
-    			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/StockTienda.fxml"));
-    	        AnchorPane root;
-    			root = (AnchorPane) loader.load();
-    			Scene scene = new Scene(root);
-    	        stockStage.setTitle("StockTienda");
-    	        stockStage.setScene(scene);
-    	        this.stockTiendaController = loader.getController();
-    	        TiendasController.stockTiendaController = this.stockTiendaController;
-    	        stockTiendaController.setTiendasController(this.tiendasController);
-    	        stockStage.show();
-    	        
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		}
-	    		    	
-	    }
-		public StockTiendaController getStockTiendaController() {
-			return stockTiendaController;
-		}
-		public void setStockTiendaController(StockTiendaController stockTiendaController) {
-			this.stockTiendaController = stockTiendaController;
-		}
-		public TiendasController getTiendasController() {
-			return tiendasController;
-		}
-		public void setTiendasController(TiendasController tiendasController) {
-			this.tiendasController = tiendasController;
-		}
-	  }
-	
-	public class ThreadClientes extends Thread {
-		private TiendasController tiendasController;		
-		private ClientesTiendaController clientesTiendaController;
-	    public void run(){
-	       
-	    		try {
-	    			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ClientesTienda.fxml"));
-	    	        AnchorPane root;
-	    			root = (AnchorPane) loader.load();
-	    			Scene scene = new Scene(root);
-	    	        clientesStage.setTitle("Clientes");
-	    	        clientesStage.setScene(scene);
-	    	        this.clientesTiendaController = loader.getController();
-	    	        TiendasController.clientesTiendaController = this.clientesTiendaController;
-	    	        clientesTiendaController.setTiendasController(this.tiendasController);
-	    	        clientesStage.show();
-	    	        
-	    		} catch (IOException e) {
-	    			e.printStackTrace();
-	    		}
-	    	
-	    	
-	    }
-		public ClientesTiendaController getClientesTiendaController() {
-			return clientesTiendaController;
-		}
-		public void setClientesTiendaController(ClientesTiendaController clientesTiendaController) {
-			this.clientesTiendaController = clientesTiendaController;
-		}
-		public TiendasController getTiendasController() {
-			return tiendasController;
-		}
-		public void setTiendasController(TiendasController tiendasController) {
-			this.tiendasController = tiendasController;
-		}
-	  }
-	
-	public class ThreadVentas extends Thread {
-		private TiendasController tiendasController;
-		private VentasTiendaController ventasTiendaController;
-	    public void run(){
-	       try {
-    			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/VentasTienda.fxml"));
-    	        AnchorPane root;
-    			root = (AnchorPane) loader.load();
-    			Scene scene = new Scene(root);
-    	        ventasStage.setTitle("Ventas");
-    	        ventasStage.setScene(scene);
-    	        this.ventasTiendaController = loader.getController();
-    	        TiendasController.ventasTiendaController = this.ventasTiendaController;
-    	        ventasTiendaController.setTiendasController(this.tiendasController);
-    	        ventasStage.show();
-	    	        
-	    		} catch (IOException e) {
-	    			e.printStackTrace();
-	    		}
-	    	
-	    }
-		public VentasTiendaController getVentasTiendaController() {
-			return ventasTiendaController;
-		}
-		public void setVentasTiendaController(VentasTiendaController ventasTiendaController) {
-			this.ventasTiendaController = ventasTiendaController;
-		}
-		public TiendasController getTiendasController() {
-			return tiendasController;
-		}
-		public void setTiendasController(TiendasController tiendasController) {
-			this.tiendasController = tiendasController;
-		}
-	  }
 	
 	@FXML
     private ResourceBundle resources;
@@ -227,11 +81,20 @@ public class TiendasController {
     @FXML
     void abrirClientes(ActionEvent event) {
     	if(!lockClientes){
-    		lockClientes = true;
-    		ThreadClientes threadClientes = new ThreadClientes();
-    		threadClientes.setTiendasController(this);
-        	threadClientes.run();
-        	lockClientes = false;
+    		try {
+    			lockClientes = true;
+    			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ClientesTienda.fxml"));
+    	        AnchorPane root;
+    			root = (AnchorPane) loader.load();
+    			Scene scene = new Scene(root);
+    	        clientesStage.setTitle("Clientes");
+    	        clientesStage.setScene(scene);
+    	        this.clientesTiendaController = loader.getController();
+    	        clientesStage.show();
+    	        lockClientes = false;
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
     	}
     	else{
     		clientesStage.requestFocus();
@@ -256,28 +119,46 @@ public class TiendasController {
 
     @FXML
     void abrirPedidos(ActionEvent event) {
+		
     	if(!lockPedidos){
-    		lockPedidos = true;
-    		ThreadPedidos threadPedidos = new ThreadPedidos();
-    		threadPedidos.setTiendasController(this);
-    		threadPedidos.run();
-    		lockPedidos = false;
+	    	try {
+	    		lockPedidos = true;
+		        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Pedidos.fxml"));
+		        AnchorPane root;
+				root = (AnchorPane) loader.load();
+				Scene scene = new Scene(root);
+		        pedidosStage.setTitle("Pedidos");
+		        pedidosStage.setScene(scene);
+		        this.pedidosController = loader.getController();
+		        pedidosStage.show();
+		        lockPedidos  = false;
+	        } catch (IOException e) {
+				e.printStackTrace();
+			}
     	}
     	else{
     		pedidosStage.requestFocus();
+    		
     	}
-		
-    	
     }
 
     @FXML
     void abrirStock(ActionEvent event) {
     	if(!lockStock){
-    		lockStock = true;
-    		ThreadStock threadStock = new ThreadStock();
-    		threadStock.setTiendasController(this);
-        	threadStock.run();
-        	lockStock = false;
+    		try {
+    			lockStock = true;
+    			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/StockTienda.fxml"));
+    	        AnchorPane root;
+    			root = (AnchorPane) loader.load();
+    			Scene scene = new Scene(root);
+    	        stockStage.setTitle("StockTienda");
+    	        stockStage.setScene(scene);
+    	        this.stockTiendaController = loader.getController();
+    	        stockStage.show();
+    	        lockStock = false;
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
     	}
     	else{
     		stockStage.requestFocus();
@@ -288,16 +169,24 @@ public class TiendasController {
     @FXML
     void abrirVentas(ActionEvent event) {
     	if(!lockVentas){
-    		lockVentas = true;
-    		ThreadVentas threadVentas = new ThreadVentas();
-    		threadVentas.setTiendasController(this);
-        	threadVentas.run();
-    		lockVentas = false;
+    		try {
+    			lockVentas = true;
+    			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/VentasTienda.fxml"));
+    	        AnchorPane root;
+    			root = (AnchorPane) loader.load();
+    			Scene scene = new Scene(root);
+    	        ventasStage.setTitle("Ventas");
+    	        ventasStage.setScene(scene);
+    	        this.ventasTiendaController = loader.getController();
+    	        ventasStage.show();
+    	        lockVentas = false;
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
     	}
     	else{
     		ventasStage.requestFocus();
     	}
-    	
     	
     }
 
@@ -317,11 +206,11 @@ public class TiendasController {
 
     }
 
-	public synchronized static PrincipalController getPrincipalController() {
+	public static PrincipalController getPrincipalController() {
 		return principalController;
 	}
 
-	public synchronized static void setPrincipalController(PrincipalController principalController) {
+	public static void setPrincipalController(PrincipalController principalController) {
 		TiendasController.principalController = principalController;
 	}
 }
