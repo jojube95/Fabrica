@@ -1,10 +1,16 @@
 package com.joan.fabrica.controlador;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-
 import com.joan.fabrica.modelo.Pan;
-
+import com.joan.fabrica.vista.CatalogoDialog;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -51,31 +57,75 @@ public class CatalogoController {
 
     @FXML
     void abrirEditar(ActionEvent event) {
-
+    	Pan pan = tvPanes.getSelectionModel().getSelectedItem();
+    	CatalogoDialog catalogoDialog = new CatalogoDialog(pan);
+    	int id = catalogoDialog.getResultado().getId();
+    	ArrayList<Pan> panes = principalController.getFabrica().getCatalogo();
+    	for(int i = 0; i < panes.size(); i++){
+    		if(panes.get(i).getId()==id){
+    			principalController.getFabrica().getCatalogo().set(i, catalogoDialog.getResultado());
+    	    	actualizarPanes();
+    	    	break;
+    		}
+    	}
+    	
     }
 
     @FXML
     void abrirEliminar(ActionEvent event) {
-
+    	Pan pan = tvPanes.getSelectionModel().getSelectedItem();
+    	principalController.getFabrica().getCatalogo().remove(pan);
+    	actualizarPanes();
     }
 
     @FXML
     void abrirNuevo(ActionEvent event) {
-
+    	CatalogoDialog catalogoDialog = new CatalogoDialog();
+    	principalController.getFabrica().getCatalogo().add(catalogoDialog.getResultado());
+    	actualizarPanes();
     }
-
+    
+    private void actualizarPanes(){
+    	tvPanes.setItems(FXCollections.observableArrayList(principalController.getFabrica().getCatalogo()));
+    }
     @FXML
     void initialize() {
-        assert tBuscar != null : "fx:id=\"tBuscar\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert tvPanes != null : "fx:id=\"tvPanes\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert tcId != null : "fx:id=\"tcId\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert tcNombre != null : "fx:id=\"tcNombre\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert tcTipo != null : "fx:id=\"tcTipo\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert tcPrecio != null : "fx:id=\"tcPrecio\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert bNuevo != null : "fx:id=\"bNuevo\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert bEditar != null : "fx:id=\"bEditar\" was not injected: check your FXML file 'Catalogo.fxml'.";
-        assert bEliminar != null : "fx:id=\"bEliminar\" was not injected: check your FXML file 'Catalogo.fxml'.";
+    	tcId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+    	tcNombre.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNombre()));
+    	tcTipo.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTipo()));
+    	tcPrecio.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getPrecio()).asObject());
+            	
+    	tvPanes.setItems(FXCollections.observableArrayList(principalController.getFabrica().getCatalogo()));
+    	
+    	//Inicial el tema de la busqueda
+    	FilteredList<Pan> filteredList = new FilteredList<>(FXCollections.observableArrayList(principalController.getFabrica().getCatalogo()), p -> true);
+    	
+    	tBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(pan -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
 
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (pan.getNombre().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                } else if (pan.getTipo().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches last name.
+                } else if(String.valueOf(pan.getId()).contains(lowerCaseFilter)){
+                	return true;
+                }
+                return false; // Does not match.
+            });
+        });
+    	
+    	SortedList<Pan> sortedData = new SortedList<>(filteredList);
+    	
+    	sortedData.comparatorProperty().bind(tvPanes.comparatorProperty());
+    	
+    	tvPanes.setItems(sortedData);
     }
 
 	public static PrincipalController getPrincipalController() {

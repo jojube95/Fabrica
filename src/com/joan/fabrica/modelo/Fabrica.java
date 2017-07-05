@@ -31,6 +31,8 @@ public class Fabrica extends Application {
 	private static HashMap<Tienda, ArrayList<Cliente>> clientesTienda = new HashMap<>();
 	private static HashMap<Tienda, ArrayList<Pedido>> pedidosTienda = new HashMap<>();
 	private static HashMap<Tienda, ArrayList<Panes>> panesTienda = new HashMap<>();
+	//otros hashmaps
+	//private static HashMap<Pedido, ArrayList<Panes>> panesPedido = new HashMap<>();
 	//Controladores
 	private static PrincipalController principalController;
 	//PrimaryStage
@@ -43,14 +45,12 @@ public class Fabrica extends Application {
 			
 			this.primaryStage = primaryStage;
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Principal.fxml"));
+			this.principalController = loader.getController();
+	        principalController.setFabrica(this);
 	        AnchorPane root = (AnchorPane) loader.load();
 	        Scene scene = new Scene(root);
 	        primaryStage.setTitle("Fabrica");
-	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
 	        primaryStage.setScene(scene);
-	        this.principalController = loader.getController();
-	        //Instanciar la clase Fabrica en el controler que se abre
-	        principalController.setFabrica(this);
 	        primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -119,6 +119,11 @@ public class Fabrica extends Application {
 			panesTienda.put(tiendas.get(i), panesTienda2);
 		}
 		
+		/*inicializar hashmap panesPedido
+		for(int i = 0; i < pedidos.size(); i++){
+			panesPedido.put(pedidos.get(i), pedidos.get(i).getPanes());
+		}*/
+		
 		
 	}
 		
@@ -185,6 +190,14 @@ public class Fabrica extends Application {
 	public static void setPanesTienda(HashMap<Tienda, ArrayList<Panes>> panesTienda) {
 		Fabrica.panesTienda = panesTienda;
 	}
+
+	/*public static HashMap<Pedido, ArrayList<Panes>> getPanesPedido() {
+		return panesPedido;
+	}
+
+	public static void setPanesPedido(HashMap<Pedido, ArrayList<Panes>> panesPedido) {
+		Fabrica.panesPedido = panesPedido;
+	}*/
 
 	
 

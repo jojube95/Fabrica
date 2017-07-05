@@ -8,6 +8,9 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 
 import com.joan.fabrica.modelo.Tienda;
 
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -85,11 +88,12 @@ public class TiendasController {
     			lockClientes = true;
     			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ClientesTienda.fxml"));
     	        AnchorPane root;
+    	        this.clientesTiendaController = loader.getController();
+    	        clientesTiendaController.setTiendasController(this);
     			root = (AnchorPane) loader.load();
     			Scene scene = new Scene(root);
     	        clientesStage.setTitle("Clientes");
     	        clientesStage.setScene(scene);
-    	        this.clientesTiendaController = loader.getController();
     	        clientesStage.show();
     	        lockClientes = false;
     		} catch (IOException e) {
@@ -125,11 +129,12 @@ public class TiendasController {
 	    		lockPedidos = true;
 		        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Pedidos.fxml"));
 		        AnchorPane root;
-				root = (AnchorPane) loader.load();
+		        this.pedidosController = loader.getController();
+		        pedidosController.setTiendasController(this);
+		        root = (AnchorPane) loader.load();
 				Scene scene = new Scene(root);
 		        pedidosStage.setTitle("Pedidos");
 		        pedidosStage.setScene(scene);
-		        this.pedidosController = loader.getController();
 		        pedidosStage.show();
 		        lockPedidos  = false;
 	        } catch (IOException e) {
@@ -149,11 +154,12 @@ public class TiendasController {
     			lockStock = true;
     			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/StockTienda.fxml"));
     	        AnchorPane root;
-    			root = (AnchorPane) loader.load();
+    	        this.stockTiendaController = loader.getController();
+    	        stockTiendaController.setTiendasController(this);
+    	        root = (AnchorPane) loader.load();
     			Scene scene = new Scene(root);
     	        stockStage.setTitle("StockTienda");
     	        stockStage.setScene(scene);
-    	        this.stockTiendaController = loader.getController();
     	        stockStage.show();
     	        lockStock = false;
     		} catch (IOException e) {
@@ -173,11 +179,12 @@ public class TiendasController {
     			lockVentas = true;
     			FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/VentasTienda.fxml"));
     	        AnchorPane root;
-    			root = (AnchorPane) loader.load();
+    	        this.ventasTiendaController = loader.getController();
+    	        ventasTiendaController.setTiendasController(this);
+    	        root = (AnchorPane) loader.load();
     			Scene scene = new Scene(root);
     	        ventasStage.setTitle("Ventas");
     	        ventasStage.setScene(scene);
-    	        this.ventasTiendaController = loader.getController();
     	        ventasStage.show();
     	        lockVentas = false;
     		} catch (IOException e) {
@@ -192,17 +199,16 @@ public class TiendasController {
 
     @FXML
     void initialize() {
-        assert tBuscar != null : "fx:id=\"tBuscar\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert tvTienda != null : "fx:id=\"tvTienda\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert tcNombre != null : "fx:id=\"tcNombre\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert tcLocalidad != null : "fx:id=\"tcLocalidad\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert bNuevo != null : "fx:id=\"bNuevo\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert bEditar != null : "fx:id=\"bEditar\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert bEliminar != null : "fx:id=\"bEliminar\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert bPedidos != null : "fx:id=\"bPedidos\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert bStock != null : "fx:id=\"bStock\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert bVentas != null : "fx:id=\"bVentas\" was not injected: check your FXML file 'Tiendas.fxml'.";
-        assert bClientes != null : "fx:id=\"bClientes\" was not injected: check your FXML file 'Tiendas.fxml'.";
+    	
+    	tcNombre.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNombre()));
+    	tcLocalidad.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getLocalidad()));
+        
+    	tvTienda.setItems(FXCollections.observableArrayList(principalController.getFabrica().getTiendas()));
+    	
+    	
+        
+        
+        
 
     }
 

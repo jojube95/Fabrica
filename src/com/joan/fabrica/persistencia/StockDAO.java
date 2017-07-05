@@ -476,4 +476,34 @@ public class StockDAO {
 		}
 		return pan2;
 	}
+	
+	public int getLastGeneratedPanesTienda(){
+		int res = 0;
+		try {
+			connectionManager.connect();
+			ResultSet resultSet = connectionManager.consultar("select auto_increment from INFORMATION_SCHEMA.TABLES where table_name = 'panestienda'");
+			resultSet.next();
+			res = resultSet.getInt(1);
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	public int getLastGeneratedPanesFabrica(){
+		int res = 0;
+		try {
+			connectionManager.connect();
+			ResultSet resultSet = connectionManager.consultar("select auto_increment from INFORMATION_SCHEMA.TABLES where table_name = 'panesfabrica'");
+			resultSet.next();
+			res = resultSet.getInt(1);
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
 }

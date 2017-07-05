@@ -169,6 +169,21 @@ public class TiendaDAO {
 		return tienda2;
 	}
 	
+	public int getLastGenerated(){
+		int res = 0;
+		try {
+			connectionManager.connect();
+			ResultSet resultSet = connectionManager.consultar("select auto_increment from INFORMATION_SCHEMA.TABLES where table_name = 'tiendas'");
+			resultSet.next();
+			res = resultSet.getInt(1);
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
 	/*public Tienda buscarTienda(int idTienda){
 		Tienda tienda = new Tienda(id, nombre, localidad, contrasenya)
 		

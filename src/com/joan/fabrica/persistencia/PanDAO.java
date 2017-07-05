@@ -3,6 +3,9 @@ package com.joan.fabrica.persistencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import com.joan.fabrica.modelo.Pan;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -170,6 +173,21 @@ public class PanDAO {
 			}
 		}
 		return pan;
+	}
+	
+	public int getLastGenerated(){
+		int res = 0;
+		try {
+			connectionManager.connect();
+			ResultSet resultSet = connectionManager.consultar("select auto_increment from INFORMATION_SCHEMA.TABLES where table_name = 'panesfabrica'");
+			resultSet.next();
+			res = resultSet.getInt(1);
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 	

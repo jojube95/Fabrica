@@ -7,6 +7,11 @@ import java.util.ResourceBundle;
 import com.joan.fabrica.modelo.Panes;
 import com.joan.fabrica.modelo.Pedido;
 
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,7 +64,7 @@ public class PedidosController {
     private TableColumn<Pedido, String> tcTienda;
 
     @FXML
-    private TableColumn<Pedido, Date> tcFecha;
+    private TableColumn<Pedido, String> tcFecha;
 
     @FXML
     private TableColumn<Pedido, Float> tcPrecio;
@@ -96,21 +101,26 @@ public class PedidosController {
 
     @FXML
     void initialize() {
-        assert tBuscar != null : "fx:id=\"tBuscar\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert bNuevo != null : "fx:id=\"bNuevo\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert bEditar != null : "fx:id=\"bEditar\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert bEliminar != null : "fx:id=\"bEliminar\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tvPedido != null : "fx:id=\"tvPedido\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcId != null : "fx:id=\"tcId\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcTienda != null : "fx:id=\"tcTienda\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcFecha != null : "fx:id=\"tcFecha\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcPrecio != null : "fx:id=\"tcPrecio\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tvPanes != null : "fx:id=\"tvPanes\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcNombre != null : "fx:id=\"tcNombre\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcTipo != null : "fx:id=\"tcTipo\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcCantidad != null : "fx:id=\"tcCantidad\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        assert tcPrecioPan != null : "fx:id=\"tcPrecioPan\" was not injected: check your FXML file 'Pedidos.fxml'.";
-        try {
+    	//Inicializar tablas
+    	tcId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+    	tcTienda.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTienda().getNombre()));
+    	tcFecha.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getFecha().toString()));
+    	tcPrecio.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getPrecioTotal()).asObject());
+    	
+    	tvPedido.setItems(FXCollections.observableArrayList(principalController.getFabrica().getPedidos()));
+    	
+    	tcNombre.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPan().getNombre()));
+    	tcTipo.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPan().getTipo()));
+    	tcCantidad.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getCant()).asObject());
+    	tcPrecioPan.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getPrecio()).asObject());
+            	
+    	tvPanes.setItems(FXCollections.observableArrayList(principalController.getFabrica().getPanes()));
+    	
+    	//Listeners de las tablas
+    	tvPedido.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+    	    actualizarPanes(newSelection);
+    	});
+    	try {
     		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModPedido.fxml"));
 	        AnchorPane root = (AnchorPane) loader.load();
 	        Scene scene = new Scene(root);
@@ -124,6 +134,10 @@ public class PedidosController {
         } catch(Exception e) {
 			e.printStackTrace();
 		}
+    }
+    
+    private void actualizarPanes(Pedido pedido){
+    	tvPanes.setItems(FXCollections.observableArrayList(pedido.getPanes()));
     }
 
 	public static PrincipalController getPrincipalController() {

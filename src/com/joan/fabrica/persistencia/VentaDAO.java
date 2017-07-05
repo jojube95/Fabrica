@@ -225,4 +225,19 @@ public class VentaDAO {
 		return venta;
 		
 	}
+	
+	public int getLastGenerated(){
+		int res = 0;
+		try {
+			connectionManager.connect();
+			ResultSet resultSet = connectionManager.consultar("select auto_increment from INFORMATION_SCHEMA.TABLES where table_name = 'ventas'");
+			resultSet.next();
+			res = resultSet.getInt(1);
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
 }

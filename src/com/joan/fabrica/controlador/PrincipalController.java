@@ -73,33 +73,37 @@ public class PrincipalController {
 			
 		
 		try {
+			this.catalogoController = loaderCatalogo.getController();
+		    catalogoController.setPrincipalController(this);
 			root = (AnchorPane) loaderCatalogo.load();
 			stageCatalogo.initModality(Modality.WINDOW_MODAL);
 			stageCatalogo.initOwner(Fabrica.primaryStage);
 			stageCatalogo.setTitle("Catálogo");
 			scene = new Scene(root);
 		    stageCatalogo.setScene(scene);
-		    this.catalogoController = loaderCatalogo.getController();
-		    catalogoController.setPrincipalController(this);
 		    
+		    
+		    this.pedidosController = loaderPedidos.getController();
+	        pedidosController.setPrincipalController(this);
 		    root = (AnchorPane) loaderPedidos.load();
 			stagePedidos.initModality(Modality.WINDOW_MODAL);
 			stagePedidos.initOwner(Fabrica.primaryStage);
 			stagePedidos.setTitle("Pedidos");
 	        scene = new Scene(root);
 			stagePedidos.setScene(scene);
-	        this.pedidosController = loaderPedidos.getController();
-	        catalogoController.setPrincipalController(this);
+	        
 		       
 	        
+	        this.tiendasController = loaderTiendas.getController();
+	        tiendasController.setPrincipalController(this);
 			root = (AnchorPane) loaderTiendas.load();
 			stageTiendas.initModality(Modality.WINDOW_MODAL);
 			stageTiendas.initOwner(Fabrica.primaryStage);
 			stageTiendas.setTitle("Tiendas");
 	        scene = new Scene(root);
 			stageTiendas.setScene(scene);
-	        this.tiendasController = loaderTiendas.getController();
-	        catalogoController.setPrincipalController(this);
+	        
+	        
 	        
 		} catch (IOException e) {
 			e.printStackTrace();
