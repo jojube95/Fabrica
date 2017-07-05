@@ -20,8 +20,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PedidosController {
-	public static ModPedidoTiendaController modPedidoTiendaController;
-	public static Stage stageModPedidoTienda = new Stage();
+	public static Stage stageModPedido = new Stage();
+	//Instancia del PrincipalControler que es el que abre esto
+	private static PrincipalController principalController;
+	//Instancia del TiendasController que es el otro que abre esto
+	private static TiendasController tiendasController;
+	
+	//Instancia del controlador que abre
+	private static ModPedidoController modPedidoController;
+	
+	
 	
 	@FXML
     private ResourceBundle resources;
@@ -73,7 +81,7 @@ public class PedidosController {
 
     @FXML
     void abrirEditar(ActionEvent event) {
-    	stageModPedidoTienda.showAndWait();
+    	stageModPedido.showAndWait();
 	}
 
     @FXML
@@ -103,17 +111,34 @@ public class PedidosController {
         assert tcCantidad != null : "fx:id=\"tcCantidad\" was not injected: check your FXML file 'Pedidos.fxml'.";
         assert tcPrecioPan != null : "fx:id=\"tcPrecioPan\" was not injected: check your FXML file 'Pedidos.fxml'.";
         try {
-    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModPedidoTienda.fxml"));
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModPedido.fxml"));
 	        AnchorPane root = (AnchorPane) loader.load();
 	        Scene scene = new Scene(root);
-	        stageModPedidoTienda.initModality(Modality.WINDOW_MODAL);
-			stageModPedidoTienda.initOwner(TiendasController.pedidosStage);
-	        stageModPedidoTienda.setTitle("Modificar venta");
+	        stageModPedido.initModality(Modality.WINDOW_MODAL);
+			stageModPedido.initOwner(TiendasController.pedidosStage);
+	        stageModPedido.setTitle("Modificar venta");
 	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
-	        stageModPedidoTienda.setScene(scene);
-	        this.modPedidoTiendaController = loader.getController();
+	        stageModPedido.setScene(scene);
+	        this.modPedidoController = loader.getController();
+	        modPedidoController.setPedidosController(this);
         } catch(Exception e) {
 			e.printStackTrace();
 		}
     }
+
+	public static PrincipalController getPrincipalController() {
+		return principalController;
+	}
+
+	public static void setPrincipalController(PrincipalController principalController) {
+		PedidosController.principalController = principalController;
+	}
+
+	public static TiendasController getTiendasController() {
+		return tiendasController;
+	}
+
+	public static void setTiendasController(TiendasController tiendasController) {
+		PedidosController.tiendasController = tiendasController;
+	}
 }

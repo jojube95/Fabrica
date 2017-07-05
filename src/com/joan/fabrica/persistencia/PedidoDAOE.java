@@ -15,11 +15,11 @@ import javafx.scene.control.Alert.AlertType;
 
 public class PedidoDAOE {
 	private ConnectionManager connectionManager;
-	public PedidoDAOE(){
-		this.connectionManager = new ConnectionManager("panaderia");
+	public PedidoDAOE(ConnectionManager connectionManager){
+		this.connectionManager = connectionManager;
 	}
 	
-	public void crearPedido(Pedido p, ConnectionManager conexion){
+	public void crearPedido(Pedido p){
 		String sql = "INSERT INTO  pedidos(idPedido, idTienda, fechaInicio, precio) VALUES (?,?,?,?)";
 		ArrayList<Object> lista = new ArrayList<>();
 		lista.add(0);
@@ -42,7 +42,7 @@ public class PedidoDAOE {
 			
 	}
 	
-	public void eliminarPedido(Pedido p, Connection conexion){
+	public void eliminarPedido(Pedido p){
 		try {
 			String sql = "select * from pedidos where idPedido = "+p.getId();
 			ResultSet resultSet = connectionManager.consultar(sql);
@@ -66,7 +66,7 @@ public class PedidoDAOE {
 		
 	}
 	
-	public ArrayList<Pedido> obtenerPedidos(Connection conexion){
+	public ArrayList<Pedido> obtenerPedidos(){
 		ArrayList<Pedido> pedidos = new ArrayList<>();
 		
 		
@@ -112,7 +112,7 @@ public class PedidoDAOE {
 		
 	}
 	
-	public Pedido modificarPedido(Pedido p, Connection conexion){
+	public Pedido modificarPedido(Pedido p){
 		Pedido p2 = p;
 		ArrayList<Object> lista = new ArrayList<>();
 		try {
@@ -151,5 +151,13 @@ public class PedidoDAOE {
 		}
 		
 		return p2;
+	}
+
+	public ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
 	}
 }

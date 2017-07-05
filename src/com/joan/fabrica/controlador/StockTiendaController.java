@@ -13,6 +13,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public class StockTiendaController {
+	//Instancia del TiendasController que es el que abre esto
+	private static TiendasController tiendasController;
+	
 	@FXML
     private ResourceBundle resources;
 
@@ -78,4 +81,12 @@ public class StockTiendaController {
         assert bEliminar != null : "fx:id=\"bEliminar\" was not injected: check your FXML file 'StockTienda.fxml'.";
 
     }
+
+	public static TiendasController getTiendasController() {
+		return tiendasController;
+	}
+
+	public static void setTiendasController(TiendasController tiendasController) {
+		StockTiendaController.tiendasController = tiendasController;
+	}
 }

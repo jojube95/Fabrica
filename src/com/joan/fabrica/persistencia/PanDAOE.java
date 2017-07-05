@@ -13,11 +13,11 @@ import javafx.scene.control.Alert.AlertType;
 public class PanDAOE {
 	
 	private ConnectionManager connectionManager;
-	public PanDAOE(){
-		this.connectionManager = new ConnectionManager("panaderia");
+	public PanDAOE(ConnectionManager connectionManager){
+		this.connectionManager = connectionManager;
 	}
 	
-	public void crearPanFabrica(Pan pan, Connection conexion){
+	public void crearPanFabrica(Pan pan){
 		
 		String sql = "INSERT INTO panesfabrica (idPan, tipo, nombre, precio) VALUES(?,?,?,?)";
 		ArrayList<Object> lista = new ArrayList<>();
@@ -30,7 +30,7 @@ public class PanDAOE {
 				
 	}
 	
-	public void eliminarPanFabrica(Pan pan, Connection conexion){
+	public void eliminarPanFabrica(Pan pan){
 		try {
 			String sql = "SELECT * FROM panesfabrica WHERE idPan ="+pan.getId();
 			ResultSet resultSet = connectionManager.consultar(sql);
@@ -56,7 +56,7 @@ public class PanDAOE {
 		
 	}
 	
-	public ArrayList<Pan> obtenerPanesFabrica(Connection conexion){
+	public ArrayList<Pan> obtenerPanesFabrica(){
 		ArrayList<Pan> panes = new ArrayList<>();
 		ResultSet rSet = null;
 		try {
@@ -74,7 +74,7 @@ public class PanDAOE {
 		return panes;
 	}
 	
-	public Pan modificarPanFabrica(Pan pan, Connection conexion){
+	public Pan modificarPanFabrica(Pan pan){
 		Pan pan2 = new Pan(0, "", "", (float) 0.0);
 		
 		try {
@@ -112,7 +112,7 @@ public class PanDAOE {
 		return pan2;
 	}
 	
-	public Pan buscarPanFabrica(int idPan, Connection conexion){
+	public Pan buscarPanFabrica(int idPan){
 		Pan pan = null;
 		
 		try {
@@ -134,5 +134,13 @@ public class PanDAOE {
 			e.printStackTrace();
 		}
 		return pan;
+	}
+
+	public ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
 	}
 }

@@ -14,11 +14,11 @@ import javafx.scene.control.Alert.AlertType;
 
 public class StockDAOE {
 	private ConnectionManager connectionManager;
-	public StockDAOE(){
-		this.connectionManager = new ConnectionManager("panaderia");
+	public StockDAOE(ConnectionManager connectionManager){
+		this.connectionManager = connectionManager;
 	}
 	
-	public void crearStockFabrica(ArrayList<Panes> panes, Connection connection){
+	public void crearStockFabrica(ArrayList<Panes> panes){
 		
 		try {
 			//Obteder idFabrica
@@ -65,7 +65,7 @@ public class StockDAOE {
 		
 	}
 	
-	public void eliminarStockFabrica(Panes panes, Connection connection){
+	public void eliminarStockFabrica(Panes panes){
 		try {
 			String sql = "select * from panesstockfabrica where idPan = "+ panes.getPan().getId();
 			ResultSet resultSet = connectionManager.consultar(sql);
@@ -92,7 +92,7 @@ public class StockDAOE {
 		
 	}
 	
-	public ArrayList<Panes> obtenerStockFabrica(Connection connection){
+	public ArrayList<Panes> obtenerStockFabrica(){
 		ArrayList<Panes> panes = new ArrayList<>();
 		Panes pan2 = null;
 		Pan pan = null;
@@ -128,7 +128,7 @@ public class StockDAOE {
 		return panes;
 	}
 	
-	public Panes modificarStockFabrica(Panes panes, Connection connection){
+	public Panes modificarStockFabrica(Panes panes){
 		Panes pan2 = null;
 		Pan pan = null;
 		int cantidad = 0;
@@ -180,7 +180,7 @@ public class StockDAOE {
 	}
 	
 	
-	public void crearStockTienda(Tienda tienda, ArrayList<Panes> panes, Connection connection){
+	public void crearStockTienda(Tienda tienda, ArrayList<Panes> panes){
 		try {
 			//Comprobar si la tienda tiene stock
 			String sql = "SELECT * FROM stocktienda WHERE idTienda = " + tienda.getId();
@@ -287,7 +287,7 @@ public class StockDAOE {
 		
 	}
 	
-	public void eliminarStockTienda(Tienda tienda, Panes panes, Connection connection){
+	public void eliminarStockTienda(Tienda tienda, Panes panes){
 		try {
 			String sql = "select * from tiendas where idTienda = "+tienda.getId();
 			ResultSet rSet = connectionManager.consultar(sql);
@@ -329,7 +329,7 @@ public class StockDAOE {
 		
 	}
 	
-	public ArrayList<Panes> obtenerStockTienda(Tienda tienda, Connection connection){
+	public ArrayList<Panes> obtenerStockTienda(Tienda tienda){
 		ArrayList<Panes> panes = new ArrayList<>();
 		Panes pan2 = null;
 		Pan pan = null;
@@ -363,7 +363,7 @@ public class StockDAOE {
 		return panes;
 	}
 	
-	public Panes modificarStockTienda(Tienda tienda, Panes panes, Connection connection){
+	public Panes modificarStockTienda(Tienda tienda, Panes panes){
 		Panes pan2 = null;
 		Pan pan = null;
 		int cantidad = 0;
@@ -420,5 +420,13 @@ public class StockDAOE {
 			e.printStackTrace();
 		}
 		return pan2;
+	}
+
+	public ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
 	}
 }

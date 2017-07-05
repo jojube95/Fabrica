@@ -13,11 +13,11 @@ import javafx.scene.control.Alert.AlertType;
 
 public class ClienteDAOE {
 	private ConnectionManager connectionManager;
-	public ClienteDAOE(){
-		this.connectionManager = new ConnectionManager("panaderia");
+	public ClienteDAOE(ConnectionManager connectionManager){
+		this.connectionManager = connectionManager;
 	}
 	
-	public void crearCliente(Cliente c, Connection conexion){
+	public void crearCliente(Cliente c){
 		String sql = "INSERT INTO panaderia.clientes (idCliente, nombre, localidad, fechaNacimiento, usuario, contrasenya, online) VALUES (?,?,?,?,?,?,?)";
 		ArrayList<Object> lista = new ArrayList<>();
 		lista.add(0);
@@ -31,7 +31,7 @@ public class ClienteDAOE {
 		c.setId(i);
 	}
 	
-	public void eliminarCliente(Cliente c, Connection conexion){
+	public void eliminarCliente(Cliente c){
 		
 			
 			String sql = "SELECT * FROM clientes WHERE IdCliente = "+c.getId();
@@ -61,7 +61,7 @@ public class ClienteDAOE {
 		
 	}
 	
-	public ArrayList<Cliente> obtenerClientes(Connection conexion){
+	public ArrayList<Cliente> obtenerClientes(){
 		ArrayList<Cliente> clientes = new ArrayList<>();
 		ResultSet rSet = null;
 		try {
@@ -80,7 +80,7 @@ public class ClienteDAOE {
 		
 	}
 	
-	public Cliente modificarCliente(Cliente c, Connection conexion){
+	public Cliente modificarCliente(Cliente c){
 		Cliente c2 = new Cliente("", 0, "", new Date(10), false,"","");
 		
 		try {
@@ -120,7 +120,7 @@ public class ClienteDAOE {
 		return c2;
 	}
 	
-	public Cliente buscarCliente(int idCliente, Connection conexion){
+	public Cliente buscarCliente(int idCliente){
 		Cliente cliente = new Cliente("", 0, "", new Date(10), true);
 		
 		try{
@@ -147,5 +147,13 @@ public class ClienteDAOE {
 			e.printStackTrace();
 		}
 		return cliente;
+	}
+
+	public ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
 	}
 }

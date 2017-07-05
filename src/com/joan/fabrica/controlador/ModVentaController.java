@@ -16,6 +16,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public class ModVentaController {
+	//Instancia del controller que abre esto
+	private static VentasTiendaController ventasTiendaController;
+	
 	@FXML
     private ResourceBundle resources;
 
@@ -72,4 +75,12 @@ public class ModVentaController {
         assert bCancelar != null : "fx:id=\"bCancelar\" was not injected: check your FXML file 'ModVenta.fxml'.";
 
     }
+
+	public static VentasTiendaController getVentasTiendaController() {
+		return ventasTiendaController;
+	}
+
+	public static void setVentasTiendaController(VentasTiendaController ventasTiendaController) {
+		ModVentaController.ventasTiendaController = ventasTiendaController;
+	}
 }

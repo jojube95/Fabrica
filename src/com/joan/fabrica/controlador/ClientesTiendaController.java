@@ -14,6 +14,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public class ClientesTiendaController {
+	//Instancia del TiendasController que es el que abre esto
+	private static TiendasController tiendasController;
+	
 	@FXML
     private ResourceBundle resources;
 
@@ -79,4 +82,12 @@ public class ClientesTiendaController {
         assert tcContra != null : "fx:id=\"tcContra\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
 
     }
+
+	public static TiendasController getTiendasController() {
+		return tiendasController;
+	}
+
+	public static void setTiendasController(TiendasController tiendasController) {
+		ClientesTiendaController.tiendasController = tiendasController;
+	}
 }

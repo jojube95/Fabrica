@@ -16,11 +16,19 @@ import javafx.scene.control.Alert.AlertType;
 
 public class VentaDAOE {
 	private ConnectionManager connectionManager;
-	public VentaDAOE(){
-		this.connectionManager = new ConnectionManager("panaderia");
+	public ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
+	}
+
+	public VentaDAOE(ConnectionManager connectionManager){
+		this.connectionManager = connectionManager;
 	}
 	
-	public void crearVenta(Venta v, ArrayList<Panes> panes, Tienda t, Connection connection){
+	public void crearVenta(Venta v, ArrayList<Panes> panes, Tienda t){
 		String sql = "INSERT INTO  ventas(idVenta, idCliente, idTienda, fecha, online, precio) VALUES (?,?,?,?,?,?)";
 		ArrayList<Object> lista = new ArrayList<>();
 		lista.add(0);
@@ -45,7 +53,7 @@ public class VentaDAOE {
 		
 	}
 	
-	public void eliminarVenta(Venta v, Connection connection){
+	public void eliminarVenta(Venta v){
 		try {
 			String sql = "select * from ventas where idVenta = "+v.getId();
 			ResultSet resultSet = connectionManager.consultar(sql);
@@ -69,7 +77,7 @@ public class VentaDAOE {
 		
 	}
 	
-	public ArrayList<Venta> obtenerVentas(Connection connection){
+	public ArrayList<Venta> obtenerVentas(){
 		ArrayList<Venta> ventas = new ArrayList<>();
 		ArrayList<Panes> panesVenta = new ArrayList<>();
 		
@@ -119,7 +127,7 @@ public class VentaDAOE {
 	}
 	
 	
-	public Venta modificarVenta(Venta v, Connection connection){
+	public Venta modificarVenta(Venta v){
 		Venta venta = new Venta(0, null, null, true, v.getPanes(), v.getIdTienda(), 0);
 		ArrayList<Panes> panesVenta = new ArrayList<>();
 		ArrayList<Object> lista = new ArrayList<>();

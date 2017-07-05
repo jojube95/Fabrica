@@ -16,9 +16,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PrincipalController {
-	private CatalogoController catalogoController;
-	private PedidosController pedidosController;
-	private TiendasController tiendasController;
+	//Controladores siguientes
+	private static CatalogoController catalogoController;
+	private static PedidosController pedidosController;
+	private static TiendasController tiendasController;
+	//Controladores anteriores, en este caso la clase Fabrica
+	private static Fabrica fabrica;
+	//Los stages que abre
 	public static Stage stageCatalogo =new Stage();
 	public static Stage stagePedidos = new Stage();
 	public static Stage stageTiendas = new Stage();
@@ -76,7 +80,7 @@ public class PrincipalController {
 			scene = new Scene(root);
 		    stageCatalogo.setScene(scene);
 		    this.catalogoController = loaderCatalogo.getController();
-		    
+		    catalogoController.setPrincipalController(this);
 		    
 		    root = (AnchorPane) loaderPedidos.load();
 			stagePedidos.initModality(Modality.WINDOW_MODAL);
@@ -85,6 +89,7 @@ public class PrincipalController {
 	        scene = new Scene(root);
 			stagePedidos.setScene(scene);
 	        this.pedidosController = loaderPedidos.getController();
+	        catalogoController.setPrincipalController(this);
 		       
 	        
 			root = (AnchorPane) loaderTiendas.load();
@@ -94,10 +99,19 @@ public class PrincipalController {
 	        scene = new Scene(root);
 			stageTiendas.setScene(scene);
 	        this.tiendasController = loaderTiendas.getController();
+	        catalogoController.setPrincipalController(this);
 	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		    
     }
+
+	public static Fabrica getFabrica() {
+		return fabrica;
+	}
+
+	public static void setFabrica(Fabrica fabrica) {
+		PrincipalController.fabrica = fabrica;
+	}
 }

@@ -12,8 +12,8 @@ import javafx.scene.control.Alert.AlertType;
 
 public class TiendaDAOE {
 	private ConnectionManager connectionManager;
-	public TiendaDAOE() {
-		this.connectionManager = new ConnectionManager("panaderia");
+	public TiendaDAOE(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
 	}
 	
 	public void crearTienda(Tienda tienda, Connection connection){
@@ -29,7 +29,7 @@ public class TiendaDAOE {
 		
 	}
 	
-	public void eliminarTienda(Tienda tienda, Connection connection){
+	public void eliminarTienda(Tienda tienda){
 		try {
 			String sql = "SELECT * FROM tiendas WHERE idTienda = "+ tienda.getId();
 			ResultSet resultSet = connectionManager.consultar(sql);
@@ -77,7 +77,7 @@ public class TiendaDAOE {
 		
 	}
 	
-	public ArrayList<Tienda> obtenerTiendas(Connection connection){
+	public ArrayList<Tienda> obtenerTiendas(){
 		ArrayList<Tienda> tiendas = new ArrayList<>();
 		ResultSet rSet = null;
 		try {
@@ -99,7 +99,7 @@ public class TiendaDAOE {
 		return tiendas;
 	}
 	
-	public Tienda modificarTienda(Tienda tienda, Connection connection){
+	public Tienda modificarTienda(Tienda tienda){
 		Tienda tienda2 = new Tienda(0, "", "", "");
 		
 		try {
@@ -135,5 +135,13 @@ public class TiendaDAOE {
 			e.printStackTrace();
 		} 
 		return tienda2;
+	}
+
+	public ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
 	}
 }

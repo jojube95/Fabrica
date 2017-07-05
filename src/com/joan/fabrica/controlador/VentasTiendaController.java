@@ -21,8 +21,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class VentasTiendaController {
+	//Instancia del TiendasController que es el que abre esto
+	private static TiendasController tiendasController;
+	//Instancia del controler que abre
 	public static ModVentaController modVentaController;
+	//Stage
 	public static Stage modVentaStage = new Stage();
+	
 	@FXML
     private ResourceBundle resources;
 
@@ -86,6 +91,7 @@ public class VentasTiendaController {
 	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
 	        modVentaStage.setScene(scene);
 	        this.modVentaController = loader.getController();
+	        modVentaController.setVentasTiendaController(this);
 	        modVentaStage.showAndWait();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -121,4 +127,12 @@ public class VentasTiendaController {
         assert tcPrecioPan != null : "fx:id=\"tcPrecioPan\" was not injected: check your FXML file 'VentasTienda.fxml'.";
 
     }
+
+	public static TiendasController getTiendasController() {
+		return tiendasController;
+	}
+
+	public static void setTiendasController(TiendasController tiendasController) {
+		VentasTiendaController.tiendasController = tiendasController;
+	}
 }

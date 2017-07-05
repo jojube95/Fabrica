@@ -13,6 +13,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public class CatalogoController {
+	//Instancia del PrincipalControler que es el que abre esto
+	private static PrincipalController principalController;
+		
 	@FXML
     private ResourceBundle resources;
 
@@ -74,4 +77,12 @@ public class CatalogoController {
         assert bEliminar != null : "fx:id=\"bEliminar\" was not injected: check your FXML file 'Catalogo.fxml'.";
 
     }
+
+	public static PrincipalController getPrincipalController() {
+		return principalController;
+	}
+
+	public static void setPrincipalController(PrincipalController principalController) {
+		CatalogoController.principalController = principalController;
+	}
 }

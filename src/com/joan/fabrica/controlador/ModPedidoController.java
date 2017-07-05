@@ -15,6 +15,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 public class ModPedidoController {
+	//Instancia del controlador que abre esto
+	private static PedidosController pedidosController;
+	
 	@FXML
     private ResourceBundle resources;
 
@@ -71,4 +74,12 @@ public class ModPedidoController {
         assert bCancelar != null : "fx:id=\"bCancelar\" was not injected: check your FXML file 'ModPedido.fxml'.";
 
     }
+
+	public static PedidosController getPedidosController() {
+		return pedidosController;
+	}
+
+	public static void setPedidosController(PedidosController pedidosController) {
+		ModPedidoController.pedidosController = pedidosController;
+	}
 }

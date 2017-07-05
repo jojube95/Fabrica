@@ -31,9 +31,13 @@ public class ConnectionManager {
 				dbcon = DriverManager.getConnection(sourceURL, "root", "");
 	}
 	
-	public Connection connect2() throws SQLException{
+	public Connection connect2() {
 		if (dbcon == null)
-			dbcon = DriverManager.getConnection(sourceURL, "root", "");
+			try {
+				dbcon = DriverManager.getConnection(sourceURL, "root", "");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		return dbcon;
 	}
 
@@ -141,6 +145,14 @@ public class ConnectionManager {
 			e.printStackTrace();
 		}
 		return id;
+	}
+
+	public Connection getDbcon() {
+		return dbcon;
+	}
+
+	public void setDbcon(Connection dbcon) {
+		this.dbcon = dbcon;
 	}
 	
 }

@@ -22,11 +22,13 @@ import javafx.stage.Stage;
 
 public class TiendasController {
 	private Stage tiendasStage = PrincipalController.stageTiendas;
-	//Controlers
+	//Controlers que abre este controler
 	public static PedidosController pedidosController;
 	public static StockTiendaController stockTiendaController;
 	public static VentasTiendaController ventasTiendaController;
 	public static ClientesTiendaController clientesTiendaController;
+	//Instancia del PrincipalControler que es el que abre esto
+	private static PrincipalController principalController;
 	//Stages
 	public static Stage pedidosStage = new Stage();
 	public static Stage stockStage = new Stage();
@@ -41,6 +43,7 @@ public class TiendasController {
 	public class ThreadPedidos extends Thread {
 		
 		private PedidosController pedidosController;
+		private TiendasController tiendasController;
 	    public void run(){
 	       try {
 	    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Pedidos.fxml"));
@@ -51,7 +54,8 @@ public class TiendasController {
 		        pedidosStage.setScene(scene);
 		        this.pedidosController = loader.getController();
 		        TiendasController.pedidosController = this.pedidosController;
-		        pedidosStage.showAndWait();
+		        pedidosController.setTiendasController(this.tiendasController);
+		        pedidosStage.show();
 		        
 	        } catch (IOException e) {
 				e.printStackTrace();
@@ -65,11 +69,16 @@ public class TiendasController {
 		public void setPedidosController(PedidosController pedidosController) {
 			this.pedidosController = pedidosController;
 		}
+		public TiendasController getTiendasController() {
+			return tiendasController;
+		}
+		public void setTiendasController(TiendasController tiendasController) {
+			this.tiendasController = tiendasController;
+		}
 	  }
 	
 	public class ThreadStock extends Thread {
-		boolean lockStock = false;
-		
+		private TiendasController tiendasController;		
 		private StockTiendaController stockTiendaController;
 	    public void run(){
 	       
@@ -82,7 +91,8 @@ public class TiendasController {
     	        stockStage.setScene(scene);
     	        this.stockTiendaController = loader.getController();
     	        TiendasController.stockTiendaController = this.stockTiendaController;
-    	        stockStage.showAndWait();
+    	        stockTiendaController.setTiendasController(this.tiendasController);
+    	        stockStage.show();
     	        
     		} catch (IOException e) {
     			e.printStackTrace();
@@ -95,11 +105,16 @@ public class TiendasController {
 		public void setStockTiendaController(StockTiendaController stockTiendaController) {
 			this.stockTiendaController = stockTiendaController;
 		}
+		public TiendasController getTiendasController() {
+			return tiendasController;
+		}
+		public void setTiendasController(TiendasController tiendasController) {
+			this.tiendasController = tiendasController;
+		}
 	  }
 	
 	public class ThreadClientes extends Thread {
-		
-		
+		private TiendasController tiendasController;		
 		private ClientesTiendaController clientesTiendaController;
 	    public void run(){
 	       
@@ -112,7 +127,8 @@ public class TiendasController {
 	    	        clientesStage.setScene(scene);
 	    	        this.clientesTiendaController = loader.getController();
 	    	        TiendasController.clientesTiendaController = this.clientesTiendaController;
-	    	        clientesStage.showAndWait();
+	    	        clientesTiendaController.setTiendasController(this.tiendasController);
+	    	        clientesStage.show();
 	    	        
 	    		} catch (IOException e) {
 	    			e.printStackTrace();
@@ -126,11 +142,16 @@ public class TiendasController {
 		public void setClientesTiendaController(ClientesTiendaController clientesTiendaController) {
 			this.clientesTiendaController = clientesTiendaController;
 		}
+		public TiendasController getTiendasController() {
+			return tiendasController;
+		}
+		public void setTiendasController(TiendasController tiendasController) {
+			this.tiendasController = tiendasController;
+		}
 	  }
 	
 	public class ThreadVentas extends Thread {
-		boolean lockVentas = false;
-		
+		private TiendasController tiendasController;
 		private VentasTiendaController ventasTiendaController;
 	    public void run(){
 	       try {
@@ -142,7 +163,8 @@ public class TiendasController {
     	        ventasStage.setScene(scene);
     	        this.ventasTiendaController = loader.getController();
     	        TiendasController.ventasTiendaController = this.ventasTiendaController;
-    	        ventasStage.showAndWait();
+    	        ventasTiendaController.setTiendasController(this.tiendasController);
+    	        ventasStage.show();
 	    	        
 	    		} catch (IOException e) {
 	    			e.printStackTrace();
@@ -154,6 +176,12 @@ public class TiendasController {
 		}
 		public void setVentasTiendaController(VentasTiendaController ventasTiendaController) {
 			this.ventasTiendaController = ventasTiendaController;
+		}
+		public TiendasController getTiendasController() {
+			return tiendasController;
+		}
+		public void setTiendasController(TiendasController tiendasController) {
+			this.tiendasController = tiendasController;
 		}
 	  }
 	
@@ -201,6 +229,7 @@ public class TiendasController {
     	if(!lockClientes){
     		lockClientes = true;
     		ThreadClientes threadClientes = new ThreadClientes();
+    		threadClientes.setTiendasController(this);
         	threadClientes.run();
         	lockClientes = false;
     	}
@@ -230,6 +259,7 @@ public class TiendasController {
     	if(!lockPedidos){
     		lockPedidos = true;
     		ThreadPedidos threadPedidos = new ThreadPedidos();
+    		threadPedidos.setTiendasController(this);
     		threadPedidos.run();
     		lockPedidos = false;
     	}
@@ -245,6 +275,7 @@ public class TiendasController {
     	if(!lockStock){
     		lockStock = true;
     		ThreadStock threadStock = new ThreadStock();
+    		threadStock.setTiendasController(this);
         	threadStock.run();
         	lockStock = false;
     	}
@@ -259,6 +290,7 @@ public class TiendasController {
     	if(!lockVentas){
     		lockVentas = true;
     		ThreadVentas threadVentas = new ThreadVentas();
+    		threadVentas.setTiendasController(this);
         	threadVentas.run();
     		lockVentas = false;
     	}
@@ -284,4 +316,12 @@ public class TiendasController {
         assert bClientes != null : "fx:id=\"bClientes\" was not injected: check your FXML file 'Tiendas.fxml'.";
 
     }
+
+	public synchronized static PrincipalController getPrincipalController() {
+		return principalController;
+	}
+
+	public synchronized static void setPrincipalController(PrincipalController principalController) {
+		TiendasController.principalController = principalController;
+	}
 }
