@@ -1,17 +1,15 @@
 package com.joan.fabrica.controlador;
 
 import java.net.URL;
-import java.util.Date;
 import java.util.ResourceBundle;
-
 import com.joan.fabrica.modelo.Panes;
 import com.joan.fabrica.modelo.Pedido;
-
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,12 +28,10 @@ public class PedidosController {
 	private static PrincipalController principalController;
 	//Instancia del TiendasController que es el otro que abre esto
 	private static TiendasController tiendasController;
-	
 	//Instancia del controlador que abre
 	private static ModPedidoController modPedidoController;
 	
-	
-	
+		
 	@FXML
     private ResourceBundle resources;
 
@@ -86,21 +82,43 @@ public class PedidosController {
 
     @FXML
     void abrirEditar(ActionEvent event) {
+    	this.modPedidoController.setPanesPedido(tvPedido.getSelectionModel().getSelectedItem().getPanes());
+    	this.modPedidoController.setPedido(tvPedido.getSelectionModel().getSelectedItem());
     	stageModPedido.showAndWait();
+    	/*for(int i = 0; i < this.principalController.getFabrica().getPedidos().size(); i++){
+    		if(this.principalController.getFabrica().getPedidos().get(i).getId() == this.pedido.getId()){
+    			this.principalController.getFabrica().getPedidos().set(i, this.pedido);
+    			break;
+    		}
+    	}
+    	actualizarPedidos();*/
+    	
 	}
 
     @FXML
     void abrirEliminar(ActionEvent event) {
-
+    	Pedido pedido = tvPedido.getSelectionModel().getSelectedItem();
+    	principalController.getFabrica().getPedidos().remove(pedido);
+    	actualizarPedidos();
     }
 
     @FXML
     void abrirNuevo(ActionEvent event) {
-
+    	modPedidoController.nuevo = true;
+    	stageModPedido.showAndWait();
+    	//principalController.getFabrica().getPedidos().add(this.pedido);
+    	//actualizarPedidos();
+    	
     }
-
+    
+    public void actualizarPedidos(){
+    	tvPedido.setItems(FXCollections.observableArrayList(PrincipalController.getFabrica().getPedidos()));
+    }
     @FXML
     void initialize() {
+    	tvPedido.getSelectionModel().clearSelection();
+    	tvPanes.getSelectionModel().clearSelection();
+    	
     	//Inicializar tablas
     	tcId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
     	tcTienda.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTienda().getNombre()));
@@ -118,7 +136,12 @@ public class PedidosController {
     	
     	//Listeners de las tablas
     	tvPedido.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-    	    actualizarPanes(newSelection);
+    	    if(newSelection!= null){
+    	    	actualizarPanes(newSelection);
+    	    }
+    		
+    	    
+    		
     	});
     	try {
     		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModPedido.fxml"));
@@ -126,7 +149,7 @@ public class PedidosController {
 	        Scene scene = new Scene(root);
 	        stageModPedido.initModality(Modality.WINDOW_MODAL);
 			stageModPedido.initOwner(TiendasController.pedidosStage);
-	        stageModPedido.setTitle("Modificar venta");
+	        stageModPedido.setTitle("Modificar pedido");
 	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
 	        stageModPedido.setScene(scene);
 	        this.modPedidoController = loader.getController();
@@ -134,6 +157,37 @@ public class PedidosController {
         } catch(Exception e) {
 			e.printStackTrace();
 		}
+    	
+    	//Inicial el tema de la busqueda
+    	FilteredList<Pedido> filteredList = new FilteredList<>(FXCollections.observableArrayList(principalController.getFabrica().getPedidos()), p -> true);
+    	
+    	tBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(pedido -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (String.valueOf(pedido.getId()).toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                } else if (pedido.getTienda().getNombre().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches last name.
+                } else if(String.valueOf(pedido.getFecha().toString()).contains(lowerCaseFilter)){
+                	return true;
+                }
+                return false; // Does not match.
+            });
+        });
+    	
+    	SortedList<Pedido> sortedData = new SortedList<>(filteredList);
+    	
+    	sortedData.comparatorProperty().bind(tvPedido.comparatorProperty());
+    	
+    	tvPedido.setItems(sortedData);
+
     }
     
     private void actualizarPanes(Pedido pedido){
@@ -154,5 +208,13 @@ public class PedidosController {
 
 	public static void setTiendasController(TiendasController tiendasController) {
 		PedidosController.tiendasController = tiendasController;
+	}
+
+	public static ModPedidoController getModPedidoController() {
+		return modPedidoController;
+	}
+
+	public static void setModPedidoController(ModPedidoController modPedidoController) {
+		PedidosController.modPedidoController = modPedidoController;
 	}
 }

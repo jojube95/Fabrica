@@ -19,6 +19,14 @@ public class Pedido {
 		this.precioTotal = calcularPrecioTotal(panes);
 	}
 	
+	public Pedido(){
+		this.id = 0;
+		this.fecha = new Date(10);
+		this.tienda = null;
+		this.panes = new ArrayList<>();
+		this.precioTotal = (float) 0.0;
+	}
+	
 	private float calcularPrecioTotal(ArrayList<Panes> panes){
 		float res = 0;
 		for(int i = 0; i<panes.size(); i++){

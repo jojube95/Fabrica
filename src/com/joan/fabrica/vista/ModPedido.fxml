@@ -2,10 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -40,12 +39,7 @@
                   <HBox>
                      <children>
                         <Label text="Tienda:" />
-                        <MenuButton fx:id="mTienda" mnemonicParsing="false" text="MenuButton">
-                          <items>
-                            <MenuItem mnemonicParsing="false" text="Action 1" />
-                            <MenuItem mnemonicParsing="false" text="Action 2" />
-                          </items>
-                        </MenuButton>
+                        <ChoiceBox fx:id="mTienda" prefWidth="150.0" />
                      </children>
                      <padding>
                         <Insets bottom="5.0" />
@@ -65,15 +59,49 @@
             </VBox>
          </center>
          <bottom>
-            <HBox BorderPane.alignment="CENTER">
+            <VBox BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="bAceptar" mnemonicParsing="false" onAction="#abrirAceptar" text="Aceptar" />
-                  <Button fx:id="bCancelar" mnemonicParsing="false" onAction="#abrirCancelar" text="Cancelar" />
+                  <HBox>
+                     <children>
+                        <Button fx:id="bAnyadir" mnemonicParsing="false" onAction="#abrirAnyadir" text="Añadir">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="bEditar" mnemonicParsing="false" onAction="#abrirEditar" text="Editar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="bEliminar" mnemonicParsing="false" onAction="#abrirEliminar" text="Eliminar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Button fx:id="bAceptar" mnemonicParsing="false" onAction="#abrirAceptar" text="Aceptar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="bCancelar" mnemonicParsing="false" onAction="#abrirCancelar" text="Cancelar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" />
+                     </padding>
+                  </HBox>
                </children>
-               <padding>
-                  <Insets bottom="5.0" />
-               </padding>
-            </HBox>
+            </VBox>
          </bottom>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
