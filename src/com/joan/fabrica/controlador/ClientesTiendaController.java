@@ -1,11 +1,19 @@
 package com.joan.fabrica.controlador;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 import com.joan.fabrica.modelo.Cliente;
+import com.joan.fabrica.modelo.Tienda;
+import com.joan.fabrica.vista.ClienteDialog;
+import com.mysql.fabric.xmlrpc.base.Array;
 
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,6 +24,9 @@ import javafx.scene.control.TextField;
 public class ClientesTiendaController {
 	//Instancia del TiendasController que es el que abre esto
 	private static TiendasController tiendasController;
+	
+	//Tienda seleccionada anteriormente
+	private Tienda tienda;
 	
 	@FXML
     private ResourceBundle resources;
@@ -45,7 +56,7 @@ public class ClientesTiendaController {
     private TableColumn<Cliente, String> tcLocalidad;
 
     @FXML
-    private TableColumn<Cliente, Date> tcFecha;
+    private TableColumn<Cliente, String> tcFecha;
 
     @FXML
     private TableColumn<Cliente, String> tcUsuario;
@@ -55,32 +66,74 @@ public class ClientesTiendaController {
 
     @FXML
     void abirrEditar(ActionEvent event) {
-
+    	int index = tvClientes.getSelectionModel().getSelectedIndex();
+    	ClienteDialog clienteDialog = new ClienteDialog(tvClientes.getSelectionModel().getSelectedItem());
+    	tiendasController.getPrincipalController().getFabrica().getClientesTienda().get(this.tienda).set(index, clienteDialog.getResultado());
+    	actualizarClientes();
     }
 
     @FXML
     void abrirEliminar(ActionEvent event) {
-
+    	Cliente cliente = tvClientes.getSelectionModel().getSelectedItem();
+    	tiendasController.getPrincipalController().getFabrica().getClientesTienda().get(this.tienda).remove(cliente);
+    	actualizarClientes();
+    	
     }
 
     @FXML
     void abrirNuevo(ActionEvent event) {
-
+    	ClienteDialog clienteDialog = new ClienteDialog();
+    	tiendasController.getPrincipalController().getFabrica().getClientesTienda().get(this.tienda).add(clienteDialog.getResultado());
+    	actualizarClientes();
+    	
+    }
+    
+    public void actualizarClientes(){
+    	tvClientes.setItems(FXCollections.observableArrayList(tiendasController.getPrincipalController().getFabrica().getClientesTienda().get(this.tienda)));
     }
 
     @FXML
     void initialize() {
-        assert tBuscar != null : "fx:id=\"tBuscar\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert bNuevo != null : "fx:id=\"bNuevo\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert bEditar != null : "fx:id=\"bEditar\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert bEliminar != null : "fx:id=\"bEliminar\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert tvClientes != null : "fx:id=\"tvClientes\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert tcNombre != null : "fx:id=\"tcNombre\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert tcLocalidad != null : "fx:id=\"tcLocalidad\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert tcFecha != null : "fx:id=\"tcFecha\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert tcUsuario != null : "fx:id=\"tcUsuario\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
-        assert tcContra != null : "fx:id=\"tcContra\" was not injected: check your FXML file 'ClientesTienda.fxml'.";
+    	tcNombre.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNombre()));
+    	tcLocalidad.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getLocalidad()));
+    	tcFecha.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getFechaNac().toString()));
+    	tcUsuario.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getUsuario()));
+    	tcContra.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPass()));
+        
+    	this.tienda = this.tiendasController.getTiendaSeleccionada();
+    	tvClientes.setItems(FXCollections.observableArrayList(tiendasController.getPrincipalController().getFabrica().getClientesTienda().get(this.tienda)));
+    	
+    	tvClientes.getSelectionModel().selectFirst();
+    	
+    	//Lo de la busqueda padre
+    	FilteredList<Cliente> filteredList = new FilteredList<>(FXCollections.observableArrayList(tiendasController.getPrincipalController().getFabrica().getClientesTienda().get(this.tienda)), c -> true);
+    	
+    	tBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(cliente -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
 
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (String.valueOf(cliente.getNombre()).toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                }else if (cliente.getLocalidad().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches last name.
+                }else if(cliente.getUsuario().toLowerCase().contains(lowerCaseFilter)){
+                	return true;
+                }
+                return false; // Does not match.
+            });
+        });
+    	
+    	SortedList<Cliente> sortedData = new SortedList<>(filteredList);
+    	
+    	sortedData.comparatorProperty().bind(tvClientes.comparatorProperty());
+    	
+    	tvClientes.setItems(sortedData);
     }
 
 	public static TiendasController getTiendasController() {
@@ -89,5 +142,13 @@ public class ClientesTiendaController {
 
 	public static void setTiendasController(TiendasController tiendasController) {
 		ClientesTiendaController.tiendasController = tiendasController;
+	}
+
+	public Tienda getTienda() {
+		return tienda;
+	}
+
+	public void setTienda(Tienda tienda) {
+		this.tienda = tienda;
 	}
 }

@@ -479,12 +479,14 @@ public class StockDAO {
 	
 	public int getLastGeneratedPanesTienda(){
 		int res = 0;
+		int autoincrement = 0;
 		try {
 			connectionManager.connect();
 			ResultSet resultSet = connectionManager.consultar("select auto_increment from INFORMATION_SCHEMA.TABLES where table_name = 'panestienda'");
 			resultSet.next();
 			res = resultSet.getInt(1);
-			
+			autoincrement = res + 1;
+			connectionManager.updateDB("ALTER TABLE panestienda AUTO_INCREMENT =" + autoincrement, false);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

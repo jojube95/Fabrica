@@ -6,8 +6,13 @@ import java.util.ResourceBundle;
 
 import com.joan.fabrica.modelo.Fabrica;
 import com.joan.fabrica.modelo.Panes;
+import com.joan.fabrica.modelo.Pedido;
 import com.joan.fabrica.modelo.Venta;
 
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +32,8 @@ public class VentasTiendaController {
 	public static ModVentaController modVentaController;
 	//Stage
 	public static Stage modVentaStage = new Stage();
+	//Venta que se crea
+	Venta venta = new Venta();
 	
 	@FXML
     private ResourceBundle resources;
@@ -56,7 +63,7 @@ public class VentasTiendaController {
     private TableColumn<Venta, String> tcCliente;
 
     @FXML
-    private TableColumn<Venta, Date> tcFecha;
+    private TableColumn<Venta, String> tcFecha;
 
     @FXML
     private TableColumn<Venta, Float> tcPrecioVenta;
@@ -81,7 +88,7 @@ public class VentasTiendaController {
 
     @FXML
     void abrirEditar(ActionEvent event) {
-    	try {
+    	/*try {
     		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModVenta.fxml"));
 	        AnchorPane root = (AnchorPane) loader.load();
 	        Scene scene = new Scene(root);
@@ -95,37 +102,70 @@ public class VentasTiendaController {
 	        modVentaStage.showAndWait();
 		} catch(Exception e) {
 			e.printStackTrace();
-		}
+		}*/
     }
 
     @FXML
     void abrirEliminar(ActionEvent event) {
-
+    	Venta venta = tvVentas.getSelectionModel().getSelectedItem();
+    	this.tiendasController.getPrincipalController().getFabrica().getVentasTienda().get(this.tiendasController.getTiendaSeleccionada()).remove(venta);
+    	actualizarVentas();
     }
 
     @FXML
     void abrirNuevo(ActionEvent event) {
-
+    	modVentaStage.showAndWait();
+    }
+    
+    public void actualizarVentas(){
+    	tvVentas.setItems(FXCollections.observableArrayList(PrincipalController.getFabrica().getVentasTienda().get(this.tiendasController.getTiendaSeleccionada())));
+    }
+    
+    private void actualizarVentas(Venta venta){
+    	tvPanes.setItems(FXCollections.observableArrayList(venta.getPanes()));
     }
 
     @FXML
     void initialize() {
-        assert tBuscar != null : "fx:id=\"tBuscar\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert bNuevo != null : "fx:id=\"bNuevo\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert bEditar != null : "fx:id=\"bEditar\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert bEliminar != null : "fx:id=\"bEliminar\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tvVentas != null : "fx:id=\"tvVentas\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcIdVenta != null : "fx:id=\"tcIdVenta\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcCliente != null : "fx:id=\"tcCliente\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcFecha != null : "fx:id=\"tcFecha\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcPrecioVenta != null : "fx:id=\"tcPrecioVenta\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tvPanes != null : "fx:id=\"tvPanes\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcIdPan != null : "fx:id=\"tcIdPan\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcNombre != null : "fx:id=\"tcNombre\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcTipo != null : "fx:id=\"tcTipo\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcCantidad != null : "fx:id=\"tcCantidad\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-        assert tcPrecioPan != null : "fx:id=\"tcPrecioPan\" was not injected: check your FXML file 'VentasTienda.fxml'.";
-
+    	//Inicializar tabla ventas
+    	tcIdVenta.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+    	tcCliente.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCliente().getNombre()));
+    	tcFecha.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getFecha().toString()));
+    	tcPrecioVenta.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getPrecio()).asObject());
+        
+    	tvVentas.setItems(FXCollections.observableArrayList(this.tiendasController.getPrincipalController().getFabrica().getVentasTienda().get(this.tiendasController.getTiendaSeleccionada())));
+    	
+    	tcIdPan.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIdPanesTienda()).asObject());
+    	tcNombre.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPan().getNombre()));
+    	tcTipo.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPan().getTipo()));
+    	tcCantidad.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getCant()).asObject());
+    	tcPrecioPan.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getPrecio()).asObject());
+            	
+    	//tvPanes.setItems(FXCollections.observableArrayList(tvVentas.getSelectionModel().getSelectedItem().getPanes()));
+    	
+    	//Listeners de las tablas
+    	tvVentas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+    	    if(newSelection!= null){
+    	    	actualizarVentas(newSelection);
+    	    }
+    	});
+    	
+    	//Inicializ el siguiente stage
+    	try {
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModVenta.fxml"));
+	        AnchorPane root = (AnchorPane) loader.load();
+	        Scene scene = new Scene(root);
+	        modVentaStage.initModality(Modality.WINDOW_MODAL);
+			modVentaStage.initOwner(TiendasController.ventasStage);
+	        modVentaStage.setTitle("Modificar venta");
+	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
+	        modVentaStage.setScene(scene);
+	        this.modVentaController = loader.getController();
+	        modVentaController.setVentasTiendaController(this);
+	        
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
     }
 
 	public static TiendasController getTiendasController() {

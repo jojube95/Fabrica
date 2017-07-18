@@ -6,11 +6,14 @@ import java.util.ResourceBundle;
 
 import org.omg.CORBA.PRIVATE_MEMBER;
 
+import com.joan.fabrica.modelo.Pedido;
 import com.joan.fabrica.modelo.Tienda;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,14 +28,14 @@ import javafx.stage.Stage;
 
 public class TiendasController {
 	//Controlers que abre este controler
-	public static PedidosController pedidosController;
+	public static PedidosTiendaController pedidosTiendaController;
 	public static StockTiendaController stockTiendaController;
 	public static VentasTiendaController ventasTiendaController;
 	public static ClientesTiendaController clientesTiendaController;
 	//Instancia del PrincipalControler que es el que abre esto
 	private static PrincipalController principalController;
 	//Stages
-	public static Stage pedidosStage = new Stage();
+	public static Stage pedidosTiendaStage = new Stage();
 	public static Stage stockStage = new Stage();
 	public static Stage clientesStage = new Stage();
 	public static Stage ventasStage = new Stage();
@@ -41,6 +44,8 @@ public class TiendasController {
 	boolean lockPedidos = false;
 	boolean lockStock = false;
 	boolean lockVentas = false;
+	//tienda seleccionada
+	private Tienda tiendaSeleccionada;
 	
 	@FXML
     private ResourceBundle resources;
@@ -127,22 +132,22 @@ public class TiendasController {
     	if(!lockPedidos){
 	    	try {
 	    		lockPedidos = true;
-		        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Pedidos.fxml"));
+		        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/PedidosTienda.fxml"));
 		        AnchorPane root;
-		        this.pedidosController = loader.getController();
-		        pedidosController.setTiendasController(this);
+		        this.pedidosTiendaController = loader.getController();
+		        pedidosTiendaController.setTiendasController(this);
 		        root = (AnchorPane) loader.load();
 				Scene scene = new Scene(root);
-		        pedidosStage.setTitle("Pedidos");
-		        pedidosStage.setScene(scene);
-		        pedidosStage.show();
+		        pedidosTiendaStage.setTitle("Pedidos Tienda");
+		        pedidosTiendaStage.setScene(scene);
+		        pedidosTiendaStage.show();
 		        lockPedidos  = false;
 	        } catch (IOException e) {
 				e.printStackTrace();
 			}
     	}
     	else{
-    		pedidosStage.requestFocus();
+    		pedidosTiendaStage.requestFocus();
     		
     	}
     }
@@ -200,15 +205,46 @@ public class TiendasController {
     @FXML
     void initialize() {
     	
+    	//Inicializar la tabla
     	tcNombre.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNombre()));
     	tcLocalidad.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getLocalidad()));
         
     	tvTienda.setItems(FXCollections.observableArrayList(principalController.getFabrica().getTiendas()));
+    	 
+    	tvTienda.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+    	    this.tiendaSeleccionada = newSelection;
+    	       		
+    	});
     	
+    	tvTienda.getSelectionModel().selectFirst();
     	
-        
-        
-        
+    	//Lo de la busqueda padre
+    	FilteredList<Tienda> filteredList = new FilteredList<>(FXCollections.observableArrayList(principalController.getFabrica().getTiendas()), t -> true);
+    	
+    	tBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(tienda -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (String.valueOf(tienda.getNombre()).toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                } else if (tienda.getLocalidad().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches last name.
+                }
+                return false; // Does not match.
+            });
+        });
+    	
+    	SortedList<Tienda> sortedData = new SortedList<>(filteredList);
+    	
+    	sortedData.comparatorProperty().bind(tvTienda.comparatorProperty());
+    	
+    	tvTienda.setItems(sortedData);
 
     }
 
@@ -218,5 +254,13 @@ public class TiendasController {
 
 	public static void setPrincipalController(PrincipalController principalController) {
 		TiendasController.principalController = principalController;
+	}
+
+	public Tienda getTiendaSeleccionada() {
+		return tiendaSeleccionada;
+	}
+
+	public void setTiendaSeleccionada(Tienda tiendaSeleccionada) {
+		this.tiendaSeleccionada = tiendaSeleccionada;
 	}
 }

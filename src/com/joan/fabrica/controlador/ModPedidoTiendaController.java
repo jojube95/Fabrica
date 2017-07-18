@@ -15,6 +15,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 public class ModPedidoTiendaController {
+	//Instancia del pedidostiendaController que es el que abre esto
+	private static PedidosTiendaController pedidosTiendasController;
 	@FXML
     private ResourceBundle resources;
 
@@ -60,15 +62,15 @@ public class ModPedidoTiendaController {
 
     @FXML
     void initialize() {
-        assert lPedido != null : "fx:id=\"lPedido\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert tFecha != null : "fx:id=\"tFecha\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert mTienda != null : "fx:id=\"mTienda\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert tvPanes != null : "fx:id=\"tvPanes\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert tcPan != null : "fx:id=\"tcPan\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert tcCantidad != null : "fx:id=\"tcCantidad\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert tcPrecio != null : "fx:id=\"tcPrecio\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert bAceptar != null : "fx:id=\"bAceptar\" was not injected: check your FXML file 'ModPedido.fxml'.";
-        assert bCancelar != null : "fx:id=\"bCancelar\" was not injected: check your FXML file 'ModPedido.fxml'.";
+        
 
     }
+
+	public static PedidosTiendaController getPedidosTiendasController() {
+		return pedidosTiendasController;
+	}
+
+	public static void setPedidosTiendasController(PedidosTiendaController pedidosTiendasController) {
+		ModPedidoTiendaController.pedidosTiendasController = pedidosTiendasController;
+	}
 }

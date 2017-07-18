@@ -37,6 +37,16 @@ public class Venta {
 		this.idTienda = idTienda;
 		this.precio = calcularPrecioTotal(panes);
 	}
+	
+	public Venta(){
+		this.id = 0;
+		this.cliente = null;
+		this.fecha = new Date(10);
+		this.online = true;
+		this.panes = new ArrayList<>();
+		this.tienda = null;
+		this.precio = (float) 0.0;
+	}
 
 	private float calcularPrecioTotal(ArrayList<Panes> panes){
 		float res = 0;

@@ -7,7 +7,7 @@ public class Panes {
 	private int cant;
 	private float precio;
 		
-	public Panes(Integer idPanesTienda, Pan pan, int cant) {
+	public Panes(int idPanesTienda, Pan pan, int cant) {
 		super();
 		this.idPanesTienda = idPanesTienda;
 		this.pan = pan;
@@ -18,6 +18,13 @@ public class Panes {
 	
 	public float calcularPrecioTotal(Pan pan, int cant){
 		return pan.getPrecio() * cant;
+	}
+	
+	public Panes sumarPanes(Panes panes){
+		this.pan = panes.getPan();
+		this.cant = this.cant + panes.getCant();
+		this.precio = calcularPrecioTotal(this.pan, this.cant);
+		return this;
 	}
 
 	public Pan getPan() {

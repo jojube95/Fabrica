@@ -59,10 +59,7 @@ public class PrincipalController {
 
     @FXML
     void initialize() {
-        assert bTiendas != null : "fx:id=\"bTiendas\" was not injected: check your FXML file 'Principal.fxml'.";
-        assert bPedidos != null : "fx:id=\"bPedidos\" was not injected: check your FXML file 'Principal.fxml'.";
-        assert bCatalogo != null : "fx:id=\"bCatalogo\" was not injected: check your FXML file 'Principal.fxml'.";
-        
+         
         FXMLLoader loaderCatalogo = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Catalogo.fxml"));
         FXMLLoader loaderPedidos = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Pedidos.fxml"));
         FXMLLoader loaderTiendas = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/Tiendas.fxml"));

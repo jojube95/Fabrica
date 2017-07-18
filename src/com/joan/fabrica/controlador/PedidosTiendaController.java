@@ -1,9 +1,14 @@
 package com.joan.fabrica.controlador;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import com.joan.fabrica.modelo.Panes;
 import com.joan.fabrica.modelo.Pedido;
+import com.joan.fabrica.modelo.Tienda;
+import com.sun.glass.ui.TouchInputSupport;
+
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -22,14 +27,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class PedidosController {
-	public static Stage stageModPedido = new Stage();
-	//Instancia del PrincipalControler que es el que abre esto
-	private static PrincipalController principalController;
+public class PedidosTiendaController {
+	public static Stage stageModPedidoTienda = new Stage();
 	//Instancia del TiendasController que es el otro que abre esto
 	private static TiendasController tiendasController;
 	//Instancia del controlador que abre
-	private static ModPedidoController modPedidoController;
+	private static ModPedidoTiendaController modPedidoTiendaController;
 	
 	//Pedido que se crea o edita
 	Pedido pedido = new Pedido();
@@ -84,45 +87,47 @@ public class PedidosController {
 
     @FXML
     void abrirEditar(ActionEvent event) {
-    	/*this.modPedidoController.pedido = tvPedido.getSelectionModel().getSelectedItem();
-    	stageModPedido.showAndWait();*/
     	
 	}
 
     @FXML
     void abrirEliminar(ActionEvent event) {
     	Pedido pedido = tvPedido.getSelectionModel().getSelectedItem();
-    	principalController.getFabrica().getPedidos().remove(pedido);
+    	this.tiendasController.getPrincipalController().getFabrica().getPedidos().remove(pedido);
     	actualizarPedidos();
     }
 
     @FXML
     void abrirNuevo(ActionEvent event) {
-    	stageModPedido.showAndWait();    	
+    	stageModPedidoTienda.showAndWait();    	
     }
     
     public void actualizarPedidos(){
-    	tvPedido.setItems(FXCollections.observableArrayList(PrincipalController.getFabrica().getPedidos()));
+    	tvPedido.setItems(FXCollections.observableArrayList(this.tiendasController.getPrincipalController().getFabrica().getPedidosTienda().get(this.tiendasController.getTiendaSeleccionada())));
     }
+    
+    private void actualizarPanes(Pedido pedido){
+    	tvPanes.setItems(FXCollections.observableArrayList(pedido.getPanes()));
+    }
+	
     @FXML
     void initialize() {
-    	tvPedido.getSelectionModel().clearSelection();
-    	tvPanes.getSelectionModel().clearSelection();
-    	
     	//Inicializar tablas
     	tcId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
     	tcTienda.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTienda().getNombre()));
     	tcFecha.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getFecha().toString()));
     	tcPrecio.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getPrecioTotal()).asObject());
+    	actualizarPedidos();
+    	tvPedido.setItems(FXCollections.observableArrayList(FXCollections.observableArrayList(this.tiendasController.getPrincipalController().getFabrica().getPedidosTienda().get(this.tiendasController.getTiendaSeleccionada()))));
     	
-    	tvPedido.setItems(FXCollections.observableArrayList(principalController.getFabrica().getPedidos()));
+    	actualizarPedidos();
     	
     	tcNombre.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPan().getNombre()));
     	tcTipo.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPan().getTipo()));
     	tcCantidad.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getCant()).asObject());
     	tcPrecioPan.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getPrecio()).asObject());
             	
-    	tvPanes.setItems(FXCollections.observableArrayList(principalController.getFabrica().getPanes()));
+    	//tvPanes.setItems(FXCollections.observableArrayList(this.getTiendasController().getPrincipalController().getFabrica().getPanes()));
     	
     	//Listeners de las tablas
     	tvPedido.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -134,22 +139,22 @@ public class PedidosController {
     		
     	});
     	try {
-    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModPedido.fxml"));
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/joan/fabrica/vista/ModPedidoTienda.fxml"));
 	        AnchorPane root = (AnchorPane) loader.load();
 	        Scene scene = new Scene(root);
-	        stageModPedido.initModality(Modality.WINDOW_MODAL);
-			stageModPedido.initOwner(PrincipalController.stagePedidos);
-	        stageModPedido.setTitle("Modificar pedido");
+	        stageModPedidoTienda.initModality(Modality.WINDOW_MODAL);
+			stageModPedidoTienda.initOwner(TiendasController.pedidosTiendaStage);
+	        stageModPedidoTienda.setTitle("Modificar pedido");
 	        //primaryStage.getIcons().add(new Image("file:Icono/icono.png"));
-	        stageModPedido.setScene(scene);
-	        this.modPedidoController = loader.getController();
-	        modPedidoController.setPedidosController(this);
+	        stageModPedidoTienda.setScene(scene);
+	        this.setModPedidoTiendaController(loader.getController());
+	        modPedidoTiendaController.setPedidosTiendasController(this);
         } catch(Exception e) {
 			e.printStackTrace();
 		}
     	
     	//Inicial el tema de la busqueda
-    	FilteredList<Pedido> filteredList = new FilteredList<>(FXCollections.observableArrayList(principalController.getFabrica().getPedidos()), p -> true);
+    	FilteredList<Pedido> filteredList = new FilteredList<>(FXCollections.observableArrayList(this.tiendasController.getPrincipalController().getFabrica().getPedidos()), p -> true);
     	
     	tBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredList.setPredicate(pedido -> {
@@ -180,31 +185,20 @@ public class PedidosController {
 
     }
     
-    private void actualizarPanes(Pedido pedido){
-    	tvPanes.setItems(FXCollections.observableArrayList(pedido.getPanes()));
-    }
-
-	public static PrincipalController getPrincipalController() {
-		return principalController;
+    
+	public static void setTiendasController(TiendasController tiendasController) {
+		PedidosTiendaController.tiendasController = tiendasController;
 	}
-
-	public static void setPrincipalController(PrincipalController principalController) {
-		PedidosController.principalController = principalController;
-	}
-
+	
 	public static TiendasController getTiendasController() {
 		return tiendasController;
 	}
 
-	public static void setTiendasController(TiendasController tiendasController) {
-		PedidosController.tiendasController = tiendasController;
+	public static ModPedidoTiendaController getModPedidoTiendaController() {
+		return modPedidoTiendaController;
 	}
 
-	public static ModPedidoController getModPedidoController() {
-		return modPedidoController;
-	}
-
-	public static void setModPedidoController(ModPedidoController modPedidoController) {
-		PedidosController.modPedidoController = modPedidoController;
+	public static void setModPedidoTiendaController(ModPedidoTiendaController modPedidoTiendaController) {
+		PedidosTiendaController.modPedidoTiendaController = modPedidoTiendaController;
 	}
 }
